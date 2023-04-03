@@ -1,3 +1,6 @@
+; 3/04_23_A
+; Restored SYZ's palette cycle and partially restored its background
+
 ; 2/04/23_C
 ; Replaced Sonic's spindash animation with the correct variation (used Knuckles' S3K animation... for some reason)
 ; Restored ALL Special Stage graphics
@@ -14,6 +17,8 @@
 ; KNOWN ISSUES:
 ; Flat platforms in LZ cause chunk corruption, while Orbinuats crash the game; have been temporarily disabled
 ; Need to find chunks to change in LZ3
+; Background scrolling is extremely glitched; only GHZ and SBZ seem to work fine; needs further research to fix
+; Special Stages have a chance to trigger Ashura
 
 ; Sonic to 1
 ; Created by:		MDTravisYT and BetaFilter
@@ -1637,25 +1642,25 @@ PalCycle_MZ:
 
 PalCycle_SYZ:				; DATA XREF: ROM:00001E68o
 		subq.w	#1,($FFFFF634).w
-		bpl.s	locret_1F56
-		move.w	#4,($FFFFF634).w
-		lea	(Pal_SYZCyc1).l,a0
+		bpl.s	locret_1AC6
+		move.w	#5,($FFFFF634).w
 		move.w	($FFFFF632).w,d0
-		subq.w	#2,($FFFFF632).w
-		bcc.s	loc_1F38
-		move.w	#6,($FFFFF632).w
-
-loc_1F38:				; CODE XREF: ROM:00001F30j
-		lea	($FFFFFB72).w,a1
+		addq.w	#1,($FFFFF632).w
+		andi.w	#3,d0
+		lsl.w	#2,d0
+		move.w	d0,d1
+		add.w	d0,d0
+		lea	(Pal_SYZCyc1).l,a0
+		lea	($FFFFFB6E).w,a1
 		move.l	(a0,d0.w),(a1)+
 		move.l	4(a0,d0.w),(a1)
 		lea	(Pal_SYZCyc2).l,a0
-		lea	($FFFFFAF2).w,a1
-		move.l	(a0,d0.w),(a1)+
-		move.l	4(a0,d0.w),(a1)
+		lea	($FFFFFB76).w,a1
+		move.w	(a0,d1.w),(a1)
+		move.w	2(a0,d1.w),4(a1)
 
-locret_1F56:				; CODE XREF: ROM:00001F1Aj
-		rts
+locret_1AC6:
+		rts	
 ; ---------------------------------------------------------------------------
 
 PalCycle_SLZ:				; DATA XREF: ROM:00001E66o
@@ -1715,10 +1720,8 @@ Pal_SBZCyc1:	dc.w	$E,  $6E,  $AE,	 $EE,  $EE,   $E,  $6E,	 $AE, $2CE,  $EE,   $E
 		dc.w   $4E,  $8E, $6EE,	$AEE, $8EE,  $2E,  $6E,	$4EE, $2CE,  $EE,   $E,	 $6E,  $6E, $2CE,  $EE,	  $E; 16
 		dc.w	$E,  $6E,  $AE,	 $EE,  $CE,   $C,  $4E,	 $8E,  $6E,  $AC,   $A,	 $2E,	$C,  $4C,  $8E,	   8; 32
 		dc.w	$A,  $2E,  $6E,	 $AC,  $CE,   $C,  $4E,	 $8E,  $AE,  $EE,   $E,	 $6E,  $6E,  $AE,  $EE,	  $E; 48
-Pal_SYZCyc1:	dc.w  $E44, $E82, $EA8,	$EEE, $E44, $E82, $EA8,	$EEE; 0
-					; DATA XREF: ROM:00001F22o
-Pal_SYZCyc2:	dc.w  $E84, $EA6, $EC6,	$EE6, $E84, $EA6, $EC6,	$EE6; 0
-					; DATA XREF: ROM:00001F44o
+Pal_SYZCyc1:	incbin	"palette/Cycle - SYZ1.bin"
+Pal_SYZCyc2:	incbin	"palette/Cycle - SYZ2.bin"
 
 ; =============== S U B	R O U T	I N E =======================================
 

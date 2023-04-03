@@ -797,27 +797,19 @@ loc_6324:
 ; ---------------------------------------------------------------------------
 
 Deform_HPZ:				; DATA XREF: ROM:Deform_Indexo
-		move.w	($FFFFEEB0).w,d4
-		ext.l	d4
-		asl.l	#6,d4
-		moveq	#2,d6
-		bsr.w	ScrollBlock4
+	; vertical scrolling
 		move.w	($FFFFEEB2).w,d5
 		ext.l	d5
-		asl.l	#7,d5
-		moveq	#6,d6
+		asl.l	#4,d5
+		move.l	d5,d1
+		asl.l	#1,d5
+		add.l	d1,d5
 		bsr.w	ScrollBlock2
 		move.w	(v_bgscreenposy).w,($FFFFF618).w
+	; calculate background scroll buffer
 		lea	(v_bgscroll_buffer).w,a1
 		move.w	(v_screenposx).w,d2
 		neg.w	d2
-		move.w	d2,d0
-		asr.w	#1,d0
-		move.w	#7,d1
-
-loc_637E:				; CODE XREF: ROM:00006380j
-		move.w	d0,(a1)+
-		dbf	d1,loc_637E
 		move.w	d2,d0
 		asr.w	#3,d0
 		sub.w	d2,d0
@@ -830,55 +822,56 @@ loc_637E:				; CODE XREF: ROM:00006380j
 		moveq	#0,d3
 		move.w	d2,d3
 		asr.w	#1,d3
-		lea	(v_bgscroll_buffer+$60).w,a2
+		move.w	#7,d1
+	@cloudLoop:		
+		move.w	d3,(a1)+
 		swap	d3
 		add.l	d0,d3
 		swap	d3
-		move.w	d3,(a1)+
-		move.w	d3,(a1)+
-		move.w	d3,(a1)+
-		move.w	d3,-(a2)
-		move.w	d3,-(a2)
-		move.w	d3,-(a2)
-		swap	d3
-		add.l	d0,d3
-		swap	d3
-		move.w	d3,(a1)+
-		move.w	d3,(a1)+
-		move.w	d3,-(a2)
-		move.w	d3,-(a2)
-		swap	d3
-		add.l	d0,d3
-		swap	d3
-		move.w	d3,(a1)+
-		move.w	d3,-(a2)
-		swap	d3
-		add.l	d0,d3
-		swap	d3
-		move.w	d3,(a1)+
-		move.w	d3,-(a2)
-		move.w	(v_bgscreenposx).w,d0
-		neg.w	d0
-		move.w	#$19,d1
+		dbf	d1,@cloudLoop
 
-loc_63E0:				; CODE XREF: ROM:000063E2j
-		move.w	d0,(a1)+
-		dbf	d1,loc_63E0
-		adda.w	#$E,a1
 		move.w	d2,d0
-		asr.w	#1,d0
-		move.w	#$17,d1
-
-loc_63F2:				; CODE XREF: ROM:000063F4j
+		asr.w	#3,d0
+		move.w	#4,d1
+	@mountainLoop:		
 		move.w	d0,(a1)+
-		dbf	d1,loc_63F2
+		dbf	d1,@mountainLoop
+
+		move.w	d2,d0
+		asr.w	#2,d0
+		move.w	#5,d1
+	@buildingLoop:		
+		move.w	d0,(a1)+
+		dbf	d1,@buildingLoop
+
+		move.w	d2,d0
+		move.w	d2,d1
+		asr.w	#1,d1
+		sub.w	d1,d0
+		ext.l	d0
+		asl.l	#4,d0
+		divs.w	#$E,d0
+		ext.l	d0
+		asl.l	#4,d0
+		asl.l	#8,d0
+		moveq	#0,d3
+		move.w	d2,d3
+		asr.w	#1,d3
+		move.w	#$D,d1
+	@bushLoop:		
+		move.w	d3,(a1)+
+		swap	d3
+		add.l	d0,d3
+		swap	d3
+		dbf	d1,@bushLoop
+
 		lea	(v_bgscroll_buffer).w,a2
 		move.w	(v_bgscreenposy).w,d0
 		move.w	d0,d2
-		andi.w	#$3F0,d0
+		andi.w	#$1F0,d0
 		lsr.w	#3,d0
 		lea	(a2,d0.w),a2
-		bra.w	loc_6306
+		bra.w	Bg_Scroll_X
 ; ---------------------------------------------------------------------------
 
 Deform_HTZ:				; DATA XREF: ROM:Deform_Indexo
