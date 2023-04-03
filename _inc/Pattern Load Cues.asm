@@ -12,6 +12,7 @@ ArtLoadCues:	dc.w PLC_Main-ArtLoadCues,PLC_Main2-ArtLoadCues; 0
 		dc.w PLC_LZAnimals-ArtLoadCues,PLC_MZAnimals-ArtLoadCues; 22
 		dc.w PLC_SLZAnimals-ArtLoadCues,PLC_SYZAnimals-ArtLoadCues; 24
 		dc.w PLC_SBZAnimals-ArtLoadCues,PLC_SSResults-ArtLoadCues
+		dc.w PLC_Ending-ArtLoadCues
 PLC_Main:	dc.w 4			
 		dc.l Nem_Lamppost
 		dc.w $F400
@@ -256,3 +257,15 @@ PLC_SSResults:	dc.w 1
 		dc.w $A820
 		dc.l S1Nem_MiniSonic
 		dc.w $AA20
+PLC_Ending:	dc.w ((PLC_EndingEnd-PLC_Ending-2)/6)-1			
+		dc.l Nem_GHZ
+		dc.w 0
+		dc.l S1Nem_EndingGraphics
+		dc.w $7400
+		dc.l Nem_EndEm
+		dc.w $78A0
+		dc.l Nem_EndSonic
+		dc.w $7C20
+		dc.l S1Nem_EndingSONICText
+		dc.w $B8A0
+PLC_EndingEnd:

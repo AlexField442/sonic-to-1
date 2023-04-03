@@ -1,3 +1,6 @@
+; 3/04/23_C
+; Restored Sonic 1 ending sequence (missing some graphics, but is functional; use cheats to access)
+
 ; 3/04/23_B
 ; Converted collision format to Sonic 2 Final
 ; Added the missing Special Stage demo
@@ -309,6 +312,12 @@ GameModeArray:
 		bra.w	Level
 ; ---------------------------------------------------------------------------
 		bra.w	GM_Special
+; ---------------------------------------------------------------------------
+		bra.w	SegaScreen
+; ---------------------------------------------------------------------------
+		bra.w	EndingSequence
+; ---------------------------------------------------------------------------
+		bra.w	SegaScreen
 ; ---------------------------------------------------------------------------
 
 ChecksumError:
@@ -5194,6 +5203,500 @@ byte_5701:	dc.b   6,$30,$30,$30,$28,$18,$18,$18; 0	; DATA XREF: S1SS_BgAnimate+9
 byte_5709:	dc.b   8,  2,  4,$FF,  2,  3,  8,$FF,  4,  2,  2,  3,  8,$FD,  4,  2; 0
 					; DATA XREF: S1SS_BgAnimate+36o
 		dc.b   2,  3,  2,$FF,  0; 16
+
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Ending sequence in Green Hill	Zone
+; ---------------------------------------------------------------------------
+
+EndingSequence:				; XREF: GameModeArray
+		move.b	#$E4,d0
+		bsr.w	PlaySound_Special ; stop music
+		bsr.w	Pal_FadeFrom
+		lea	(v_objspace).w,a1
+		moveq	#0,d0
+		move.w	#$7FF,d1
+
+End_ClrObjRam:
+		move.l	d0,(a1)+
+		dbf	d1,End_ClrObjRam ; clear object	RAM
+
+		lea	($FFFFF628).w,a1
+		moveq	#0,d0
+		move.w	#$15,d1
+
+End_ClrRam:
+		move.l	d0,(a1)+
+		dbf	d1,End_ClrRam	; clear	variables
+
+		lea	($FFFFF700).w,a1
+		moveq	#0,d0
+		move.w	#$3F,d1
+
+End_ClrRam2:
+		move.l	d0,(a1)+
+		dbf	d1,End_ClrRam2	; clear	variables
+
+		lea	($FFFFFE60).w,a1
+		moveq	#0,d0
+		move.w	#$47,d1
+
+End_ClrRam3:
+		move.l	d0,(a1)+
+		dbf	d1,End_ClrRam3	; clear	variables
+
+		move	#$2700,sr
+		move.w	($FFFFF60C).w,d0
+		andi.b	#$BF,d0
+		move.w	d0,($C00004).l
+		bsr.w	ClearScreen
+		lea	($C00004).l,a6
+		move.w	#$8B03,(a6)
+		move.w	#$8230,(a6)
+		move.w	#$8407,(a6)
+		move.w	#$857C,(a6)
+		move.w	#$9001,(a6)
+		move.w	#$8004,(a6)
+		move.w	#$8720,(a6)
+		move.w	#$8ADF,($FFFFF624).w
+		move.w	($FFFFF624).w,(a6)
+		move.l	#v_vdp_cmdbuf,(v_vdp_cmdbufend).w
+		move.w	#$1E,($FFFFFE14).w
+		move.w	#$600,($FFFFFE10).w ; set level	number to 0600 (extra flowers)
+		cmpi.b	#6,($FFFFFE57).w ; do you have all 6 emeralds?
+		beq.s	End_LoadData	; if yes, branch
+		move.w	#$601,($FFFFFE10).w ; set level	number to 0601 (no flowers)
+
+End_LoadData:
+		moveq	#$1C,d0
+		bsr.w	RunPLC_ROM	; load ending sequence patterns
+		jsr	(Hud_Base).l
+		bsr.w	LevelSizeLoad
+		bsr.w	DeformBGLayer
+		bset	#2,($FFFFF754).w
+		bsr.w	MainLevelLoadBlock
+		bsr.w	LoadTilesFromStart
+		bsr.w	ColIndexLoad
+		move	#$2300,sr
+;		lea	(Kos_EndFlowers).l,a0 ;	load extra flower patterns
+;		lea	($FFFF9400).w,a1 ; RAM address to buffer the patterns
+;		bsr.w	KosDec
+		moveq	#3,d0
+		bsr.w	PalLoad1	; load Sonic"s pallet
+		move.w	#$8B,d0
+		bsr.w	PlaySound	; play ending sequence music
+		btst	#6,($FFFFF604).w ; is button A pressed?
+		beq.s	End_LoadSonic	; if not, branch
+		move.b	#1,($FFFFFFFA).w ; enable debug	mode
+
+End_LoadSonic:
+		move.b	#1,(v_objspace).w ; load	Sonic object
+		bset	#0,(v_objspace+$22).w ; make	Sonic face left
+		move.b	#1,($FFFFF7CC).w ; lock	controls
+		move.w	#$400,($FFFFF602).w ; move Sonic to the	left
+		move.w	#$F800,(v_objspace+$14).w ; set Sonic's speed
+		jsr	(ObjPosLoad).l
+		jsr	(ObjectsLoad).l
+		jsr	(BuildSprites).l
+		moveq	#0,d0
+		move.w	d0,($FFFFFE20).w
+		move.l	d0,($FFFFFE22).w
+		move.b	d0,($FFFFFE1B).w
+		move.b	d0,($FFFFFE2C).w
+		move.b	d0,($FFFFFE2D).w
+		move.b	d0,($FFFFFE2E).w
+		move.b	d0,($FFFFFE2F).w
+		move.w	d0,($FFFFFE08).w
+		move.w	d0,($FFFFFE02).w
+		move.w	d0,($FFFFFE04).w
+		bsr.w	OscillateNumInit
+		move.b	#1,($FFFFFE1F).w
+		move.b	#1,($FFFFFE1D).w
+		move.b	#0,($FFFFFE1E).w
+		move.w	#1800,($FFFFF614).w
+		move.b	#$18,($FFFFF62A).w
+		bsr.w	DelayProgram
+		move.w	($FFFFF60C).w,d0
+		ori.b	#$40,d0
+		move.w	d0,($C00004).l
+		move.w	#$3F,($FFFFF626).w
+		bsr.w	Pal_FadeTo
+
+; ---------------------------------------------------------------------------
+; Main ending sequence loop
+; ---------------------------------------------------------------------------
+
+End_MainLoop:
+		bsr.w	Pause
+		move.b	#$18,($FFFFF62A).w
+		bsr.w	DelayProgram
+		addq.w	#1,($FFFFFE04).w
+		bsr.w	End_MoveSonic
+		jsr	(ObjectsLoad).l
+		bsr.w	DeformBgLayer
+		jsr	(BuildSprites).l
+		jsr	(ObjPosLoad).l
+		bsr.w	PalCycle_Load
+		bsr.w	OscillateNumDo
+		bsr.w	ChangeRingFrame
+		cmpi.b	#$18,($FFFFF600).w ; is	scene number $18 (ending)?
+		beq.s	loc_52DA	; if yes, branch
+		move.b	#$1C,($FFFFF600).w ; set scene to $1C (credits)
+		move.b	#$91,d0
+		bsr.w	PlaySound_Special ; play credits music
+		move.w	#0,($FFFFFFF4).w ; set credits index number to 0
+		rts	
+; ===========================================================================
+
+loc_52DA:
+		tst.w	($FFFFFE02).w	; is level set to restart?
+		beq.w	End_MainLoop	; if not, branch
+
+		clr.w	($FFFFFE02).w
+		move.w	#$3F,($FFFFF626).w
+		clr.w	($FFFFF794).w
+
+End_AllEmlds:				; XREF: loc_5334
+		bsr.w	Pause
+		move.b	#$18,($FFFFF62A).w
+		bsr.w	DelayProgram
+		addq.w	#1,($FFFFFE04).w
+		bsr.w	End_MoveSonic
+		jsr	(ObjectsLoad).l
+		bsr.w	DeformBgLayer
+		jsr	(BuildSprites).l
+		jsr	(ObjPosLoad).l
+		bsr.w	OscillateNumDo
+		bsr.w	ChangeRingFrame
+		subq.w	#1,($FFFFF794).w
+		bpl.s	loc_5334
+		move.w	#2,($FFFFF794).w
+		bsr.w	Pal_ToWhite
+
+loc_5334:
+		tst.w	($FFFFFE02).w
+		beq.w	End_AllEmlds
+		clr.w	($FFFFFE02).w
+		move.w	#$2E2F,($FFFF8480).w ; modify level layout
+		lea	($C00004).l,a5
+		lea	($C00000).l,a6
+		lea	($FFFFF700).w,a3
+		lea	($FFFF8400).w,a4
+		move.w	#$4000,d2
+		bsr.w	LoadTilesFromStart2
+		moveq	#$13,d0
+		bsr.w	PalLoad1	; load ending pallet
+		bsr.w	Pal_MakeWhite
+		bra.w	End_MainLoop
+
+; ---------------------------------------------------------------------------
+; Subroutine controlling Sonic on the ending sequence
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+End_MoveSonic:				; XREF: End_MainLoop
+		move.b	($FFFFF7D7).w,d0
+		bne.s	End_MoveSonic2
+		cmpi.w	#$90,(v_objspace+8).w ; has Sonic passed $90 on y-axis?
+		bcc.s	End_MoveSonExit	; if not, branch
+		addq.b	#2,($FFFFF7D7).w
+		move.b	#1,($FFFFF7CC).w ; lock	player"s controls
+		move.w	#$800,($FFFFF602).w ; move Sonic to the	right
+		rts	
+; ===========================================================================
+
+End_MoveSonic2:				; XREF: End_MoveSonic
+		subq.b	#2,d0
+		bne.s	End_MoveSonic3
+		cmpi.w	#$A0,(v_objspace+8).w ; has Sonic passed $A0 on y-axis?
+		bcs.s	End_MoveSonExit	; if not, branch
+		addq.b	#2,($FFFFF7D7).w
+		moveq	#0,d0
+		move.b	d0,($FFFFF7CC).w
+		move.w	d0,($FFFFF602).w ; stop	Sonic moving
+		move.w	d0,(v_objspace+$14).w
+		move.b	#$81,($FFFFF7C8).w
+		move.b	#3,(v_objspace+$1A).w
+		move.w	#$505,(v_objspace+$1C).w ; use "standing" animation
+		move.b	#3,(v_objspace+$1E).w
+		rts	
+; ===========================================================================
+
+End_MoveSonic3:				; XREF: End_MoveSonic
+		subq.b	#2,d0
+		bne.s	End_MoveSonExit
+		addq.b	#2,($FFFFF7D7).w
+		move.w	#$A0,(v_objspace+8).w
+		move.b	#$87,(v_objspace).w ; load Sonic	ending sequence	object
+		clr.w	(v_objspace+$24).w
+
+End_MoveSonExit:
+		rts	
+; End of function End_MoveSonic
+
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Object 87 - Sonic on ending sequence
+; ---------------------------------------------------------------------------
+
+Obj87:					; XREF: Obj_Index
+		moveq	#0,d0
+		move.b	$25(a0),d0
+		move.w	Obj87_Index(pc,d0.w),d1
+		jsr	Obj87_Index(pc,d1.w)
+		jmp	(DisplaySprite).l
+; ===========================================================================
+Obj87_Index:	dc.w Obj87_Main-Obj87_Index, Obj87_MakeEmlds-Obj87_Index
+		dc.w Obj87_Animate-Obj87_Index,	Obj87_LookUp-Obj87_Index
+		dc.w Obj87_ClrObjRam-Obj87_Index, Obj87_Animate-Obj87_Index
+		dc.w Obj87_MakeLogo-Obj87_Index, Obj87_Animate-Obj87_Index
+		dc.w Obj87_Leap-Obj87_Index, Obj87_Animate-Obj87_Index
+; ===========================================================================
+
+Obj87_Main:				; XREF: Obj87_Index
+		cmpi.b	#6,($FFFFFE57).w ; do you have all 6 emeralds?
+		beq.s	Obj87_Main2	; if yes, branch
+		addi.b	#$10,$25(a0)	; else,	skip emerald sequence
+		move.w	#$D8,$30(a0)
+		rts	
+; ===========================================================================
+
+Obj87_Main2:				; XREF: Obj87_Main
+		addq.b	#2,$25(a0)
+		move.l	#Map_obj87,4(a0)
+		move.w	#$3E1,2(a0)
+		move.b	#4,1(a0)
+		clr.b	$22(a0)
+		move.b	#2,$18(a0)
+		move.b	#0,$1A(a0)
+		move.w	#$50,$30(a0)	; set duration for Sonic to pause
+
+Obj87_MakeEmlds:			; XREF: Obj87_Index
+		subq.w	#1,$30(a0)	; subtract 1 from duration
+		bne.s	Obj87_Wait
+		addq.b	#2,$25(a0)
+		move.w	#1,$1C(a0)
+		move.b	#$88,(v_objspace+$400).w ; load chaos	emeralds objects
+
+Obj87_Wait:
+		rts	
+; ===========================================================================
+
+Obj87_LookUp:				; XREF: Obj87_Index
+		cmpi.w	#$2000,(v_objspace+$43C).l
+		bne.s	locret_5480
+		move.w	#1,($FFFFFE02).w ; set level to	restart	(causes	flash)
+		move.w	#$5A,$30(a0)
+		addq.b	#2,$25(a0)
+
+locret_5480:
+		rts	
+; ===========================================================================
+
+Obj87_ClrObjRam:			; XREF: Obj87_Index
+		subq.w	#1,$30(a0)
+		bne.s	Obj87_Wait2
+		lea	(v_objspace+$400).w,a1
+		move.w	#$FF,d1
+
+Obj87_ClrLoop:
+		clr.l	(a1)+
+		dbf	d1,Obj87_ClrLoop ; clear the object RAM
+		move.w	#1,($FFFFFE02).w
+		addq.b	#2,$25(a0)
+		move.b	#1,$1C(a0)
+		move.w	#$3C,$30(a0)
+
+Obj87_Wait2:
+		rts	
+; ===========================================================================
+
+Obj87_MakeLogo:				; XREF: Obj87_Index
+		subq.w	#1,$30(a0)
+		bne.s	Obj87_Wait3
+		addq.b	#2,$25(a0)
+		move.w	#$B4,$30(a0)
+		move.b	#2,$1C(a0)
+		move.b	#$89,(v_objspace+$400).w ; load "SONIC THE HEDGEHOG" object
+
+Obj87_Wait3:
+		rts	
+; ===========================================================================
+
+Obj87_Animate:				; XREF: Obj87_Index
+		lea	(Ani_obj87).l,a1
+		jmp	(AnimateSprite).l
+; ===========================================================================
+
+Obj87_Leap:				; XREF: Obj87_Index
+		subq.w	#1,$30(a0)
+		bne.s	Obj87_Wait4
+		addq.b	#2,$25(a0)
+		move.l	#Map_obj87,4(a0)
+		move.w	#$3E1,2(a0)
+		move.b	#4,1(a0)
+		clr.b	$22(a0)
+		move.b	#2,$18(a0)
+		move.b	#5,$1A(a0)
+		move.b	#2,$1C(a0)	; use "leaping"	animation
+		move.b	#$89,(v_objspace+$400).w ; load "SONIC THE HEDGEHOG" object
+		bra.s	Obj87_Animate
+; ===========================================================================
+
+Obj87_Wait4:				; XREF: Obj87_Leap
+		rts	
+; ===========================================================================
+Ani_obj87:	dc.w byte_551C-Ani_obj87
+		dc.w byte_552A-Ani_obj87
+		dc.w byte_5534-Ani_obj87
+byte_551C:	dc.b 3,	1, 0, 1, 0, 1, 0, 1, 0,	1, 0, 1, 2, $FA
+byte_552A:	dc.b 5,	3, 4, 3, 4, 3, 4, 3, $FA, 0
+byte_5534:	dc.b 3,	5, 5, 5, 6, 7, $FE, 1
+		align 2
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Object 88 - chaos emeralds on	the ending sequence
+; ---------------------------------------------------------------------------
+
+Obj88:					; XREF: Obj_Index
+		moveq	#0,d0
+		move.b	$24(a0),d0
+		move.w	Obj88_Index(pc,d0.w),d1
+		jsr	Obj88_Index(pc,d1.w)
+		jmp	(DisplaySprite).l
+; ===========================================================================
+Obj88_Index:	dc.w Obj88_Main-Obj88_Index
+		dc.w Obj88_Move-Obj88_Index
+; ===========================================================================
+
+Obj88_Main:				; XREF: Obj88_Index
+		cmpi.b	#2,(v_objspace+$1A).w
+		beq.s	Obj88_Main2
+		addq.l	#4,sp
+		rts	
+; ===========================================================================
+
+Obj88_Main2:				; XREF: Obj88_Main
+		move.w	(v_objspace+8).w,8(a0) ; match X position with Sonic
+		move.w	(v_objspace+$C).w,$C(a0) ; match Y position	with Sonic
+		movea.l	a0,a1
+		moveq	#0,d3
+		moveq	#1,d2
+		moveq	#5,d1
+
+Obj88_MainLoop:
+		move.b	#$88,(a1)	; load chaos emerald object
+		addq.b	#2,$24(a1)
+		move.l	#Map_obj88,4(a1)
+		move.w	#$3C5,2(a1)
+		move.b	#4,1(a1)
+		move.b	#1,$18(a1)
+		move.w	8(a0),$38(a1)
+		move.w	$C(a0),$3A(a1)
+		move.b	d2,$1C(a1)
+		move.b	d2,$1A(a1)
+		addq.b	#1,d2
+		move.b	d3,$26(a1)
+		addi.b	#$2A,d3
+		lea	$40(a1),a1
+		dbf	d1,Obj88_MainLoop ; repeat 5 more times
+
+Obj88_Move:				; XREF: Obj88_Index
+		move.w	$3E(a0),d0
+		add.w	d0,$26(a0)
+		move.b	$26(a0),d0
+		jsr	(CalcSine).l
+		moveq	#0,d4
+		move.b	$3C(a0),d4
+		muls.w	d4,d1
+		asr.l	#8,d1
+		muls.w	d4,d0
+		asr.l	#8,d0
+		add.w	$38(a0),d1
+		add.w	$3A(a0),d0
+		move.w	d1,8(a0)
+		move.w	d0,$C(a0)
+		cmpi.w	#$2000,$3C(a0)
+		beq.s	loc_55FA
+		addi.w	#$20,$3C(a0)
+
+loc_55FA:
+		cmpi.w	#$2000,$3E(a0)
+		beq.s	loc_5608
+		addi.w	#$20,$3E(a0)
+
+loc_5608:
+		cmpi.w	#$140,$3A(a0)
+		beq.s	locret_5614
+		subq.w	#1,$3A(a0)
+
+locret_5614:
+		rts	
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Object 89 - "SONIC THE HEDGEHOG" text	on the ending sequence
+; ---------------------------------------------------------------------------
+
+Obj89:					; XREF: Obj_Index
+		moveq	#0,d0
+		move.b	$24(a0),d0
+		move.w	Obj89_Index(pc,d0.w),d1
+		jsr	Obj89_Index(pc,d1.w)
+		jmp	(DisplaySprite).l
+; ===========================================================================
+Obj89_Index:	dc.w Obj89_Main-Obj89_Index
+		dc.w Obj89_Move-Obj89_Index
+		dc.w Obj89_GotoCredits-Obj89_Index
+; ===========================================================================
+
+Obj89_Main:				; XREF: Obj89_Index
+		addq.b	#2,$24(a0)
+		move.w	#-$20,8(a0)	; object starts	outside	the level boundary
+		move.w	#$D8,$A(a0)
+		move.l	#Map_obj89,4(a0)
+		move.w	#$5C5,2(a0)
+		move.b	#0,1(a0)
+		move.b	#0,$18(a0)
+
+Obj89_Move:				; XREF: Obj89_Index
+		cmpi.w	#$C0,8(a0)	; has object reached $C0?
+		beq.s	Obj89_Delay	; if yes, branch
+		addi.w	#$10,8(a0)	; move object to the right
+		rts
+; ===========================================================================
+
+Obj89_Delay:				; XREF: Obj89_Move
+		addq.b	#2,$24(a0)
+		move.w	#60*5,$30(a0)	; set duration for delay (5 seconds)
+
+Obj89_GotoCredits:			; XREF: Obj89_Index
+		subq.w	#1,$30(a0)	; subtract 1 from duration
+		bpl.s	Obj89_Display
+		move.b	#$1C,($FFFFF600).w ; exit to credits
+
+Obj89_Display:
+		rts
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Sprite mappings - Sonic on the ending	sequence
+; ---------------------------------------------------------------------------
+Map_obj87:
+		include	"_maps/obj87.asm"
+
+; ---------------------------------------------------------------------------
+; Sprite mappings - chaos emeralds on the ending sequence
+; ---------------------------------------------------------------------------
+Map_obj88:
+		include	"_maps/obj88.asm"
+
+; ---------------------------------------------------------------------------
+; Sprite mappings - "SONIC THE HEDGEHOG" text on the ending sequence
+; ---------------------------------------------------------------------------
+Map_obj89:
+		include	"_maps/obj89.asm"
+
 ; ---------------------------------------------------------------------------
 		nop
 
@@ -11030,7 +11533,7 @@ loc_A956:				; CODE XREF: ROM:0000A94Cj
 		tst.w	d4
 		bmi.s	loc_A9CE
 		move.w	d4,d0
-		bsr.w	CalcSine
+		jsr	CalcSine
 		move.w	d4,d2
 		lsr.w	#8,d2
 		asl.w	d2,d0
@@ -14290,9 +14793,9 @@ Obj_Index:	dc.l Obj01
                 dc.l NullObject
 		dc.l NullObject
                 dc.l NullObject
-                dc.l NullObject
-                dc.l NullObject
-		dc.l NullObject
+                dc.l Obj87
+                dc.l Obj88
+		dc.l Obj89
                 dc.l Obj8A
                 dc.l NullObject
                 dc.l NullObject
@@ -36555,6 +37058,14 @@ Map128_GHZ:     incbin "map128\GHZ_comp.bin"
 ;
 ; yet another leftover chunk
 ;
+Nem_EndEm:	incbin	"artnem/Ending - Emeralds.bin"
+		even
+Nem_EndSonic:	incbin	"artnem/Ending - Sonic.bin"
+		even
+Nem_TryAgain:	incbin	"artnem/Ending - Try Again.bin"
+		even
+
+
 S1Nem_EndingGraphics:incbin "artnem\Ending - Flowers.bin"
                 even
 S1Nem_CreditsFont:incbin "artnem\Ending - Credits.bin"
