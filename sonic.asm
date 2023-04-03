@@ -1,4 +1,8 @@
-; 3/04_23_A
+; 3/04/23_B
+; Converted collision format to Sonic 2 Final
+; Added the missing Special Stage demo
+
+; 3/04/23_A
 ; Restored SYZ's palette cycle and partially restored its background
 
 ; 2/04/23_C
@@ -3047,7 +3051,7 @@ RunDemo:				; CODE XREF: ROM:0000364Cj
 		move.w	Demo_Levels(pc,d0.w),d0
 		move.w	d0,(v_zone).w
 		addq.w	#1,($FFFFFFF2).w
-		cmpi.w	#4-1,($FFFFFFF2).w
+		cmpi.w	#4,($FFFFFFF2).w
 		bcs.s	loc_3694
 		move.w	#0,($FFFFFFF2).w
 
@@ -4362,30 +4366,18 @@ Demo_S1EndIndex:dc.l $8B0837		; DATA XREF: ROM:00003E66o
 
 ColIndexLoad:				; CODE XREF: ROM:00003D52p
 		moveq	#0,d0
-		move.b	(v_zone).w,d0
+		move.b	(v_zone).w,d0				; current zone
 		lsl.w	#2,d0
-		move.l	#v_col1st,($FFFFF796).w
-		movea.l	ColP_Index(pc,d0.w),a1
-		lea	(v_col1st).w,a2
-		bsr.s	Col_Load
-		movea.l	ColS_Index(pc,d0.w),a1
-		lea	(v_col2nd).w,a2
+		move.l	#v_col1st,($FFFFF796).w ; points to primary collision data initially
+		move.w	d0,-(sp)
+		movea.l	ColP_Index(pc,d0.w),a0		; get primary collision data for current zone
+		lea	(v_col1st).w,a1
+		bsr.w	KosDec					; decompress primary collision data
+		move.w	(sp)+,d0
+		movea.l	ColS_Index(pc,d0.w),a0	; get secondary collision data for current zone
+		lea	(v_col2nd).w,a1			
+		bra.w	KosDec					; decompress secondary collision data
 ; End of function ColIndexLoad
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-Col_Load:				; CODE XREF: ColIndexLoad+18p
-		move.w	#$2FF,d1
-		moveq	#0,d2
-
-loc_4616:				; CODE XREF: Col_Load+Aj
-		move.b	(a1)+,d2
-		move.w	d2,(a2)+
-		dbf	d1,loc_4616
-		rts
-; End of function Col_Load
 
 ; ---------------------------------------------------------------------------
 ColP_Index:	dc.l ColP_GHZ		; 0
@@ -10916,49 +10908,18 @@ Obj25_Index:	dc.w loc_A81C-Obj25_Index ; DATA XREF: ROM:Obj25_Indexo
 		dc.w loc_A8A6-Obj25_Index
 		dc.w loc_A8CC-Obj25_Index
 		dc.w loc_A8DA-Obj25_Index
-		dc.b $10,  0,$18,  0	; 0
-		dc.b $20,  0,  0,$10	; 4
-		dc.b   0,$18,  0,$20	; 8
-		dc.b $10,$10,$18,$18	; 12
-		dc.b $20,$20,$F0,$10	; 16
-		dc.b $E8,$18,$E0,$20	; 20
-		dc.b $10,  8,$18,$10	; 24
-		dc.b $F0,  8,$E8,$10	; 28
 ; ---------------------------------------------------------------------------
 
 loc_A81C:				; DATA XREF: ROM:Obj25_Indexo
-		movea.l	a0,a1
-		moveq	#0,d1
-		move.w	8(a0),d2
-		move.w	$C(a0),d3
-		bra.s	loc_A832
-; ---------------------------------------------------------------------------
-
-loc_A82A:				; CODE XREF: ROM:0000A886j
-		swap	d1
-		bsr.w	SingleObjectLoad
-		bne.s	loc_A88A
-
-loc_A832:				; CODE XREF: ROM:0000A828j
-		move.b	#$25,0(a1) 
-		addq.b	#2,$24(a1)
-		move.w	d2,8(a1)
-		move.w	8(a0),$32(a1)
-		move.w	d3,$C(a1)
-		move.l	#Map_Obj25,4(a1)
-		move.w	#$27B2,2(a1)
+		addq.b	#2,$24(a0)
+		move.w	8(a0),$32(a0)
+		move.l	#Map_Obj25,4(a0)
+		move.w	#$27B2,2(a0)
 		bsr.w	ModifyA1SpriteAttr_2P
-		move.b	#4,1(a1)
-		move.b	#2,$18(a1)
-		move.b	#$47,$20(a1) ; "G"
-		move.b	#8,$19(a1)
-		move.b	$23(a0),$23(a1)
-		move.b	d1,$34(a1)
-		addq.w	#1,d1
-		add.w	d5,d2
-		add.w	d6,d3
-		swap	d1
-		dbf	d1,loc_A82A
+		move.b	#4,1(a0)
+		move.b	#2,$18(a0)
+		move.b	#$47,$20(a0) ; "G"
+		move.b	#8,$19(a0)
 
 loc_A88A:				; CODE XREF: ROM:0000A830j
 					; DATA XREF: ROM:0000A7F4o
@@ -10976,11 +10937,6 @@ loc_A8A6:				; DATA XREF: ROM:0000A7F6o
 		move.b	#0,$20(a0)
 		move.b	#1,$18(a0)
 		bsr.w	sub_A8DE
-		lea	($FFFFFC00).w,a2
-		moveq	#0,d0
-		move.b	$23(a0),d0
-		move.b	$34(a0),d1
-		bset	d1,2(a2,d0.w)
 
 loc_A8CC:				; DATA XREF: ROM:0000A7F8o
 		lea	(Ani_Obj25).l,a1
@@ -25682,7 +25638,7 @@ Floor_ChkTile:				; CODE XREF: FindFloorp FindFloor2p ...
 
 FindFloor:				; CODE XREF: Sonic_AnglePos+A0p
 					; Sonic_AnglePos+CEp ...
-		bsr.s	Floor_ChkTile
+		bsr.w	Floor_ChkTile
 		move.w	(a1),d0
 		move.w	d0,d4
 		andi.w	#$3FF,d0
@@ -25701,8 +25657,8 @@ loc_12DBE:				; CODE XREF: FindFloor+Aj
 
 loc_12DCC:				; CODE XREF: FindFloor+Ej
 		movea.l	($FFFFF796).w,a2
-		add.w	d0,d0
-		move.w	(a2,d0.w),d0
+		move.b	(a2,d0.w),d0
+		andi.w	#$FF,d0
 		beq.s	loc_12DBE
 		lea	(AngleMap).l,a2
 		move.b	(a2,d0.w),(a4)
@@ -25784,8 +25740,8 @@ loc_12E64:				; CODE XREF: FindFloor2+Cj
 
 loc_12E72:				; CODE XREF: FindFloor2+10j
 		movea.l	($FFFFF796).w,a2
-		add.w	d0,d0
-		move.w	(a2,d0.w),d0
+		move.b	(a2,d0.w),d0
+		andi.w	#$FF,d0
 		beq.s	loc_12E64
 		lea	(AngleMap).l,a2
 		move.b	(a2,d0.w),(a4)
@@ -25859,8 +25815,8 @@ loc_12EFA:				; CODE XREF: FindWall+Cj FindWall+2Aj	...
 
 loc_12F08:				; CODE XREF: FindWall+10j
 		movea.l	($FFFFF796).w,a2
-		add.w	d0,d0
-		move.w	(a2,d0.w),d0
+		move.b	(a2,d0.w),d0
+		andi.w	#$FF,d0
 		beq.s	loc_12EFA
 		lea	(AngleMap).l,a2
 		move.b	(a2,d0.w),(a4)
@@ -25941,8 +25897,8 @@ loc_12FA0:				; CODE XREF: FindWall2+Cj
 
 loc_12FAE:				; CODE XREF: FindWall2+10j
 		movea.l	($FFFFF796).w,a2
-		add.w	d0,d0
-		move.w	(a2,d0.w),d0
+		move.b	(a2,d0.w),d0
+		andi.w	#$FF,d0
 		beq.s	loc_12FA0
 		lea	(AngleMap).l,a2
 		move.b	(a2,d0.w),(a4)
