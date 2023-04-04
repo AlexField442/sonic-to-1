@@ -1,3 +1,7 @@
+; 4/04/23_A
+; Partially restored Sonic 1 credits
+; Fixed Orbinauts crashing the game; now appears correctly in their respective zones
+
 ; 3/04/23_C
 ; Restored Sonic 1 ending sequence (missing some graphics, but is functional; use cheats to access)
 
@@ -22,7 +26,7 @@
 
 ; ===========================================================================
 ; KNOWN ISSUES:
-; Flat platforms in LZ cause chunk corruption, while Orbinuats crash the game; have been temporarily disabled
+; Flat platforms in LZ cause chunk corruption
 ; Need to find chunks to change in LZ3
 ; Background scrolling is extremely glitched; only GHZ and SBZ seem to work fine; needs further research to fix
 ; Special Stages have a chance to trigger Ashura
@@ -317,7 +321,7 @@ GameModeArray:
 ; ---------------------------------------------------------------------------
 		bra.w	EndingSequence
 ; ---------------------------------------------------------------------------
-		bra.w	SegaScreen
+		bra.w	Credits
 ; ---------------------------------------------------------------------------
 
 ChecksumError:
@@ -1403,7 +1407,6 @@ RunPLC:					; CODE XREF: Pal_FadeTo+2Ep
 		bne.s	locret_1730
 		movea.l	($FFFFF680).w,a0
 		lea	NemPCD_WriteRowToVDP(pc),a3
-		nop
 		lea	(v_ngfx_buffer).w,a1
 		move.w	(a0)+,d2
 		bpl.s	loc_16FE
@@ -4293,6 +4296,15 @@ loc_44F6:				; CODE XREF: MoveSonicInDemo+82j
 loc_450C:				; CODE XREF: MoveSonicInDemo+A2j
 		lsl.w	#2,d0
 		movea.l	(a1,d0.w),a1
+		tst.w	($FFFFFFF0).w
+		bpl.s	loc_4056
+		lea	(Demo_S1EndIndex).l,a1
+		move.w	($FFFFFFF4).w,d0
+		subq.w	#1,d0
+		lsl.w	#2,d0
+		movea.l	(a1,d0.w),a1
+
+loc_4056:
 		move.w	($FFFFF790).w,d0
 		adda.w	d0,a1
 		move.b	(a1),d0
@@ -4356,19 +4368,20 @@ Demo_Index:	dc.l Demo_S1GHZ		; DATA XREF: ROM:00003E4Eo
 		dc.l $FE8000
 		dc.l $FE8000
 		dc.l $FE8000
-Demo_S1EndIndex:dc.l $8B0837		; DATA XREF: ROM:00003E66o
-					; garbage, leftover from Sonic 1"s ending sequence demos
-		dc.l $42085C
-		dc.l $6A085F
-		dc.l $2F082C
-		dc.l $210803
-		dc.l $28300808
-		dc.l $2E0815
-		dc.l $F0846
-		dc.l $1A08FF
-		dc.l $8CA0000
-		dc.l 0
-		dc.l 0
+Demo_S1EndIndex:
+	dc.l Demo_EndGHZ1
+	dc.l Demo_EndMZ
+	dc.l Demo_EndSYZ
+	dc.l Demo_EndLZ
+	dc.l Demo_EndSLZ
+	dc.l Demo_EndSBZ1
+	dc.l Demo_EndSBZ2
+	dc.l Demo_EndGHZ2
+
+		dc.b 0,	$8B, 8,	$37, 0,	$42, 8,	$5C, 0,	$6A, 8,	$5F, 0,	$2F, 8,	$2C
+		dc.b 0,	$21, 8,	3, $28,	$30, 8,	8, 0, $2E, 8, $15, 0, $F, 8, $46
+		dc.b 0,	$1A, 8,	$FF, 8,	$CA, 0,	0, 0, 0, 0, 0, 0, 0, 0,	0
+		align 2
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -5697,6 +5710,215 @@ Map_obj88:
 Map_obj89:
 		include	"_maps/obj89.asm"
 
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Credits ending sequence
+; ---------------------------------------------------------------------------
+
+Credits:				; XREF: GameModeArray
+		bsr.w	ClearPLC
+		bsr.w	Pal_FadeFrom
+		lea	($C00004).l,a6
+		move.w	#$8004,(a6)
+		move.w	#$8230,(a6)
+		move.w	#$8407,(a6)
+		move.w	#$9001,(a6)
+		move.w	#$9200,(a6)
+		move.w	#$8B03,(a6)
+		move.w	#$8720,(a6)
+		clr.b	($FFFFF64E).w
+		bsr.w	ClearScreen
+		lea	(v_objspace).w,a1
+		moveq	#0,d0
+		move.w	#$7FF,d1
+
+Cred_ClrObjRam:
+		move.l	d0,(a1)+
+		dbf	d1,Cred_ClrObjRam ; clear object RAM
+
+		move.l	#$74000002,($C00004).l
+		lea	(S1Nem_CreditsFont).l,a0 ;	load credits alphabet patterns
+		bsr.w	NemDec
+		lea	($FFFFFB80).w,a1
+		moveq	#0,d0
+		move.w	#$1F,d1
+
+Cred_ClrPallet:
+		move.l	d0,(a1)+
+		dbf	d1,Cred_ClrPallet ; fill pallet	with black ($0000)
+
+		moveq	#3,d0
+		bsr.w	PalLoad1	; load Sonic"s pallet
+		move.b	#$8A,(v_objspace+$80).w ; load credits object
+		jsr	(ObjectsLoad).l
+		jsr	(BuildSprites).l
+		bsr.w	EndingDemoLoad
+		moveq	#0,d0
+		move.b	($FFFFFE10).w,d0
+		lsl.w	#4,d0
+		lea	(MainLoadBlocks).l,a2 ;	load block mappings etc
+		lea	(a2,d0.w),a2
+		moveq	#0,d0
+		move.b	(a2),d0
+		beq.s	loc_5862
+		bsr.w	LoadPLC		; load level patterns
+
+loc_5862:
+		moveq	#1,d0
+		bsr.w	LoadPLC		; load standard	level patterns
+		move.w	#120,($FFFFF614).w ; display a credit for 2 seconds
+		bsr.w	Pal_FadeTo
+
+Cred_WaitLoop:
+		move.b	#4,($FFFFF62A).w
+		bsr.w	DelayProgram
+		bsr.w	RunPLC
+		tst.w	($FFFFF614).w	; have 2 seconds elapsed?
+		bne.s	Cred_WaitLoop	; if not, branch
+		tst.l	($FFFFF680).w	; have level gfx finished decompressing?
+		bne.s	Cred_WaitLoop	; if not, branch
+		cmpi.w	#9,($FFFFFFF4).w ; have	the credits finished?
+		beq.w	TryAgainEnd	; if yes, branch
+		rts	
+
+; ---------------------------------------------------------------------------
+; Ending sequence demo loading subroutine
+; ---------------------------------------------------------------------------
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+EndingDemoLoad:				; XREF: Credits
+		move.w	($FFFFFFF4).w,d0
+		andi.w	#$F,d0
+		add.w	d0,d0
+		move.w	EndDemo_Levels(pc,d0.w),d0 ; load level	array
+		move.w	d0,($FFFFFE10).w ; set level from level	array
+		addq.w	#1,($FFFFFFF4).w
+		cmpi.w	#9,($FFFFFFF4).w ; have	credits	finished?
+		bcc.s	EndDemo_Exit	; if yes, branch
+		move.w	#$8001,($FFFFFFF0).w ; force demo mode
+		move.b	#8,($FFFFF600).w ; set game mode to 08 (demo)
+		move.b	#3,($FFFFFE12).w ; set lives to	3
+		moveq	#0,d0
+		move.w	d0,($FFFFFE20).w ; clear rings
+		move.l	d0,($FFFFFE22).w ; clear time
+		move.l	d0,($FFFFFE26).w ; clear score
+		move.b	d0,($FFFFFE30).w ; clear lamppost counter
+		cmpi.w	#4,($FFFFFFF4).w ; is SLZ demo running?
+		bne.s	EndDemo_Exit	; if not, branch
+		lea	(EndDemo_LampVar).l,a1 ; load lamppost variables
+		lea	($FFFFFE30).w,a2
+		move.w	#8,d0
+
+EndDemo_LampLoad:
+		move.l	(a1)+,(a2)+
+		dbf	d0,EndDemo_LampLoad
+
+EndDemo_Exit:
+		rts	
+; End of function EndingDemoLoad
+
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; Levels used in the end sequence demos
+; ---------------------------------------------------------------------------
+EndDemo_Levels: incbin	misc/dm_ord2.bin
+
+; ---------------------------------------------------------------------------
+; Lamppost variables in the end sequence demo (Star Light Zone)
+; ---------------------------------------------------------------------------
+EndDemo_LampVar:
+		dc.b 1,	1		; XREF: EndingDemoLoad
+		dc.w $A00, $62C, $D
+		dc.l 0
+		dc.b 0,	0
+		dc.w $800, $957, $5CC, $4AB, $3A6, 0, $28C, 0, 0, $308
+		dc.b 1,	1
+; ===========================================================================
+; ---------------------------------------------------------------------------
+; "TRY AGAIN" and "END"	screens
+; ---------------------------------------------------------------------------
+
+TryAgainEnd:				; XREF: Credits
+		bsr.w	ClearPLC
+		bsr.w	Pal_FadeFrom
+		lea	($C00004).l,a6
+		move.w	#$8004,(a6)
+		move.w	#$8230,(a6)
+		move.w	#$8407,(a6)
+		move.w	#$9001,(a6)
+		move.w	#$9200,(a6)
+		move.w	#$8B03,(a6)
+		move.w	#$8720,(a6)
+		clr.b	($FFFFF64E).w
+		bsr.w	ClearScreen
+		lea	(v_objspace).w,a1
+		moveq	#0,d0
+		move.w	#$7FF,d1
+
+TryAg_ClrObjRam:
+		move.l	d0,(a1)+
+		dbf	d1,TryAg_ClrObjRam ; clear object RAM
+
+;		moveq	#$1D,d0
+;		bsr.w	RunPLC_ROM	; load "TRY AGAIN" or "END" patterns
+		lea	($FFFFFB80).w,a1
+		moveq	#0,d0
+		move.w	#$1F,d1
+
+TryAg_ClrPallet:
+		move.l	d0,(a1)+
+		dbf	d1,TryAg_ClrPallet ; fill pallet with black ($0000)
+
+		moveq	#$13,d0
+		bsr.w	PalLoad1	; load ending pallet
+		clr.w	($FFFFFBC0).w
+		move.b	#$8B,(v_objspace+$80).w ; load Eggman object
+		jsr	(ObjectsLoad).l
+		jsr	(BuildSprites).l
+		move.w	#1800,($FFFFF614).w ; show screen for 30 seconds
+		bsr.w	Pal_FadeTo
+
+; ---------------------------------------------------------------------------
+; "TRY AGAIN" and "END"	screen main loop
+; ---------------------------------------------------------------------------
+TryAg_MainLoop:
+		bsr.w	Pause
+		move.b	#4,($FFFFF62A).w
+		bsr.w	DelayProgram
+		jsr	(ObjectsLoad).l
+		jsr	(BuildSprites).l
+		andi.b	#$80,($FFFFF605).w ; is	Start button pressed?
+		bne.s	TryAg_Exit	; if yes, branch
+		tst.w	($FFFFF614).w	; has 30 seconds elapsed?
+		beq.s	TryAg_Exit	; if yes, branch
+		cmpi.b	#$1C,($FFFFF600).w
+		beq.s	TryAg_MainLoop
+
+TryAg_Exit:
+		move.b	#0,($FFFFF600).w ; go to Sega screen
+		rts	
+
+; ---------------------------------------------------------------------------
+; Ending sequence demos
+; ---------------------------------------------------------------------------
+Demo_EndGHZ1:	incbin	demodata/e_ghz1.bin
+		align 2
+Demo_EndMZ:	incbin	demodata/e_mz.bin
+		align 2
+Demo_EndSYZ:	incbin	demodata/e_syz.bin
+		align 2
+Demo_EndLZ:	incbin	demodata/e_lz.bin
+		align 2
+Demo_EndSLZ:	incbin	demodata/e_slz.bin
+		align 2
+Demo_EndSBZ1:	incbin	demodata/e_sbz1.bin
+		align 2
+Demo_EndSBZ2:	incbin	demodata/e_sbz2.bin
+		align 2
+Demo_EndGHZ2:	incbin	demodata/e_ghz2.bin
+		align 2
 ; ---------------------------------------------------------------------------
 		nop
 
@@ -19927,7 +20149,6 @@ byte_1140E:	dc.w 2
 ; ---------------------------------------------------------------------------
 
 Obj60:					; XREF: Obj_Index
-		jmp	DeleteObject
 		moveq	#0,d0
 		move.b	$24(a0),d0
 		move.w	Obj60_Index(pc,d0.w),d1
@@ -20123,10 +20344,10 @@ byte_11EDE:	dc.b $F, 1, 2, $FE, 1, 0
 ; ---------------------------------------------------------------------------
 ; Sprite mappings - Orbinaut enemy (LZ,	SLZ, SBZ)
 ; ---------------------------------------------------------------------------
-Map_obj60:	dc.w	byte_11EEC-Ani_obj60
-		dc.w	byte_11EF2-Ani_obj60
-		dc.w	byte_11EF8-Ani_obj60
-		dc.w	byte_11EFE-Ani_obj60
+Map_obj60:	dc.w	byte_11EEC-Map_obj60
+		dc.w	byte_11EF2-Map_obj60
+		dc.w	byte_11EF8-Map_obj60
+		dc.w	byte_11EFE-Map_obj60
 byte_11EEC:	dc.w 1
 		dc.w $F40A, 0, 0, $FFF4
 byte_11EF2:	dc.w 1
@@ -30952,7 +31173,6 @@ j_SpeedToPos_8:				; CODE XREF: ROM:00016E1Cp
 ; ---------------------------------------------------------------------------
 
 Obj52:					; XREF: Obj_Index
-		jmp	DeleteObject
 		moveq	#0,d0
 		move.b	$24(a0),d0
 		move.w	Obj52_Index(pc,d0.w),d1
@@ -36339,7 +36559,7 @@ Level_SYZ1:	incbin "levels\SYZ1.bin"
                 even
 Level_SYZ2:	incbin "levels\SYZ2.bin"
                 even
-Level_SYZ3:	incbin "levels\SYZ3.bin"
+Level_SYZ3:	incbin "levels\SYZ1.bin"
                 even
 Level_SYZBg:	incbin "levels\SYZbg.bin"
                 even
