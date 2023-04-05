@@ -26,7 +26,7 @@
 
 ; ===========================================================================
 ; KNOWN ISSUES:
-; Flat platforms in LZ cause chunk corruption
+; Flat platforms in LZ cause chunk corruption (Obj52BUG)
 ; Need to find chunks to change in LZ3
 ; Background scrolling is extremely glitched; only GHZ and SBZ seem to work fine; needs further research to fix
 ; Special Stages have a chance to trigger Ashura
@@ -34,6 +34,7 @@
 ; Sonic to 1
 ; Created by:		MDTravisYT and BetaFilter
 ; Additional work by:	Alex Field and soupnuts6061
+; Special Thanks:	Devon (Obj52BUG explanation)
 ; ===========================================================================
 
                 include "Variables.asm"
@@ -1172,7 +1173,7 @@ loc_1388:
 		clr.l	($FFFFF61A).w
 		lea	($FFFFF800).w,a1
 		moveq	#0,d0
-		move.w	#$A0,d1	; "†"
+		move.w	#$A0,d1	; "ÔøΩ"
 
 ClearScreen_ClearBuffer1:		; CODE XREF: ClearScreen+70j
 		move.l	d0,(a1)+
@@ -1901,7 +1902,7 @@ Pal_DecColor:				; CODE XREF: Pal_FadeOut:loc_221Ep
 
 Pal_DecGreen:				; CODE XREF: Pal_DecColor+Aj
 		move.w	d2,d1
-		andi.w	#$E0,d1	; "‡"
+		andi.w	#$E0,d1	; "ÔøΩ"
 		beq.s	Pal_DecBlue
 		subi.w	#$20,(a0)+
 		rts
@@ -2089,8 +2090,8 @@ Pal_AddColor2:				; CODE XREF: Pal_ToWhite:loc_2346p
 
 loc_237C:				; CODE XREF: Pal_AddColor2+12j
 		move.w	d2,d1
-		andi.w	#$E0,d1	; "‡"
-		cmpi.w	#$E0,d1	; "‡"
+		andi.w	#$E0,d1	; "ÔøΩ"
+		cmpi.w	#$E0,d1	; "ÔøΩ"
 		beq.s	loc_238E
 
 loc_2388:
@@ -2915,7 +2916,7 @@ Title_CheckLvlSel:			; CODE XREF: ROM:0000365Cj
 		bsr.w	PalLoad2
 		lea	(v_hscrolltablebuffer).w,a1
 		moveq	#0,d0
-		move.w	#$DF,d1	; "ﬂ"
+		move.w	#$DF,d1	; "ÔøΩ"
 
 LevelSelect_ClearScroll:		; CODE XREF: ROM:000034B8j
 		move.l	d0,(a1)+
@@ -2954,15 +2955,15 @@ loc_3516:				; CODE XREF: ROM:0000350Ej
 		addi.w	#$80,d0	
 		tst.b	($FFFFFFE3).w
 		beq.s	loc_353A
-		cmpi.w	#$9F,d0	; "ü"
+		cmpi.w	#$9F,d0	; "ÔøΩ"
 		beq.s	loc_354C
-		cmpi.w	#$9E,d0	; "û"
+		cmpi.w	#$9E,d0	; "ÔøΩ"
 		beq.s	loc_355A
 
 loc_353A:				; CODE XREF: ROM:0000352Cj
-		cmpi.w	#$94,d0	; "î"
+		cmpi.w	#$94,d0	; "ÔøΩ"
 		bcs.s	loc_3546
-		cmpi.w	#$A0,d0	; "†"
+		cmpi.w	#$A0,d0	; "ÔøΩ"
 		bcs.s	LevelSelect_Loop
 
 loc_3546:				; CODE XREF: ROM:0000353Ej
@@ -3827,9 +3828,9 @@ loc_4058:				; CODE XREF: WaterEffects+Aj
 
 loc_4086:				; CODE XREF: WaterEffects+34j
 					; WaterEffects+38j
-		cmpi.w	#$DF,d0	; "ﬂ"
+		cmpi.w	#$DF,d0	; "ÔøΩ"
 		bcs.s	loc_4090
-		move.w	#$DF,d0	; "ﬂ"
+		move.w	#$DF,d0	; "ÔøΩ"
 
 loc_4090:				; CODE XREF: WaterEffects+4Aj
 		move.b	d0,($FFFFF625).w
@@ -3877,7 +3878,7 @@ DynWater_LZ1:
 		move.w	(v_screenposx).w,d0
 		move.b	($FFFFF64D).w,d2
 		bne.s	loc_4164
-		move.w	#$B8,d1	; "∏"
+		move.w	#$B8,d1	; "ÔøΩ"
 		cmpi.w	#$600,d0
 		bcs.s	loc_4148
 		move.w	#$108,d1
@@ -3906,7 +3907,7 @@ loc_4148:				; CODE XREF: ROM:0000410Aj
 loc_414E:				; CODE XREF: ROM:00004116j
 		cmpi.w	#$C80,d0
 		bcs.s	loc_4148
-		move.w	#$E8,d1	; "Ë"
+		move.w	#$E8,d1	; "ÔøΩ"
 		cmpi.w	#$1500,d0
 		bcs.s	loc_4148
 		move.w	#$108,d1
@@ -3961,7 +3962,7 @@ DynWater_LZ3:
 		move.w	#$4C8,d1
 		move.b	#$4B,(v_lvllayout+$206).w ; "K"
 		move.b	#1,($FFFFF64D).w
-		move.w	#$B7,d0	; "∑"
+		move.w	#$B7,d0	; "ÔøΩ"
 		bsr.w	PlaySound_Special
 
 loc_41E8:				; CODE XREF: ROM:000041BEj
@@ -4096,7 +4097,7 @@ loc_42EE:				; CODE XREF: ROM:0000438Ej
 		move.b	($FFFFFE0F).w,d0
 		andi.b	#$3F,d0	
 		bne.s	loc_4326
-		move.w	#$D0,d0	; "–"
+		move.w	#$D0,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_4326:				; CODE XREF: ROM:0000431Aj
@@ -4205,7 +4206,7 @@ loc_4430:				; CODE XREF: ROM:00004428j
 		move.b	($FFFFFE0F).w,d0
 		andi.b	#$1F,d0
 		bne.s	locret_4454
-		move.w	#$D0,d0	; "–"
+		move.w	#$D0,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 locret_4454:				; CODE XREF: ROM:00004448j
@@ -4734,7 +4735,7 @@ j_AnimateLevelGfx:
 	endif
 
 GM_Special:				; CODE XREF: ROM:000003ACj
-		move.w	#$CA,d0	; " "
+		move.w	#$CA,d0	; "ÔøΩ"
 		bsr.w	PlaySound_Special
 		bsr.w	Pal_MakeFlash
 		move	#$2700,sr
@@ -4802,7 +4803,7 @@ loc_50CC:				; CODE XREF: ROM:000050CEj
 		bsr.w	PalCycle_S1SS
 		clr.w	($FFFFF780).w
 		move.w	#$40,($FFFFF782).w 
-		move.w	#$89,d0	; "â"
+		move.w	#$89,d0	; "ÔøΩ"
 		bsr.w	PlaySound
 		move.w	#0,($FFFFF790).w
 		lea	(Demo_Index).l,a1
@@ -4897,7 +4898,7 @@ loc_5214:				; CODE XREF: ROM:00005208j
 		move.w	($FFFFFE20).w,d0
 		mulu.w	#$A,d0
 		move.w	d0,($FFFFF7D4).w
-		move.w	#$8E,d0	; "é"
+		move.w	#$8E,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		lea	(v_objspace).w,a1
 		moveq	#0,d0
@@ -4920,7 +4921,7 @@ loc_529C:				; CODE XREF: ROM:000052BEj
 		beq.s	loc_529C
 		tst.l	($FFFFF680).w
 		bne.s	loc_529C
-		move.w	#$CA,d0	; " "
+		move.w	#$CA,d0	; "ÔøΩ"
 		bsr.w	PlaySound_Special
 		bsr.w	Pal_MakeFlash
 		rts
@@ -5062,7 +5063,7 @@ locret_5424:				; CODE XREF: PalCycle_S1SS+4j
 
 loc_5426:				; CODE XREF: PalCycle_S1SS+70j
 		move.w	($FFFFF79E).w,d1
-		cmpi.w	#$8A,d0	; "ä"
+		cmpi.w	#$8A,d0	; "ÔøΩ"
 		bcs.s	loc_5432
 		addq.w	#1,d1
 
@@ -6003,10 +6004,10 @@ loc_68E6:				; CODE XREF: LoadTilesAsYouMove+66j
 loc_6900:				; CODE XREF: LoadTilesAsYouMove+A2j
 		bclr	#1,(a2)
 		beq.s	loc_691A
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		bsr.w	sub_7084
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		bsr.w	sub_6D8C
 
@@ -6054,10 +6055,10 @@ sub_694C:				; CODE XREF: LoadTilesAsYouMove+4Ep
 loc_6966:				; CODE XREF: sub_694C+8j
 		bclr	#1,(a2)
 		beq.s	loc_6980
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		bsr.w	sub_70C0
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		bsr.w	sub_6D8C
 
@@ -6105,10 +6106,10 @@ sub_69B2:				; CODE XREF: ROM:0000683Cp
 loc_69CE:				; CODE XREF: sub_69B2+Aj
 		bclr	#1,(a2)
 		beq.s	loc_69E8
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		bsr.w	sub_7084
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		bsr.w	sub_6D8C
 
@@ -6146,10 +6147,10 @@ loc_6A18:				; CODE XREF: sub_69B2+50j
 loc_6A30:				; CODE XREF: sub_69B2+6Aj
 		bclr	#5,(a2)
 		beq.s	loc_6A4C
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#0,d5
 		bsr.w	sub_7086
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#0,d5
 		moveq	#$1F,d6
 		bsr.w	sub_6D90
@@ -6168,10 +6169,10 @@ loc_6A4C:				; CODE XREF: sub_69B2+82j
 loc_6A64:				; CODE XREF: sub_69B2+9Ej
 		bclr	#7,(a2)
 		beq.s	locret_6A80
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		bsr.w	sub_7084
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 		moveq	#$FFFFFFF0,d5
 		moveq	#$1F,d6
 		bsr.w	sub_6D84
@@ -6228,7 +6229,7 @@ loc_6AF2:				; CODE XREF: sub_6A82+Cj
 		bne.s	loc_6B04
 		bclr	#1,(a2)
 		beq.s	loc_6B4C
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 
 loc_6B04:				; CODE XREF: sub_6A82+76j
 		lea	byte_6AD1(pc),a0
@@ -6330,7 +6331,7 @@ loc_6C0C:				; CODE XREF: sub_6B7C+Cj
 		bne.s	loc_6C1E
 		bclr	#1,(a2)
 		beq.s	loc_6C48
-		move.w	#$E0,d4	; "‡"
+		move.w	#$E0,d4	; "ÔøΩ"
 
 loc_6C1E:				; CODE XREF: sub_6B7C+96j
 		lea	byte_6BCB(pc),a0
@@ -6925,7 +6926,7 @@ sub_7086:				; CODE XREF: sub_69B2+70p sub_69B2+8Ap ...
 		tst.w	(f_2player).w
 		bne.s	loc_70A6
 		add.w	4(a3),d4
-		andi.w	#$F0,d4	; ""
+		andi.w	#$F0,d4	; "ÔøΩ"
 		andi.w	#$1F0,d5
 		lsl.w	#4,d4
 		lsr.w	#2,d5
@@ -6958,7 +6959,7 @@ sub_70C0:				; CODE XREF: sub_694C+Ep sub_694C+26p	...
 		bne.s	loc_70E2
 		add.w	4(a3),d4
 		add.w	(a3),d5
-		andi.w	#$F0,d4	; ""
+		andi.w	#$F0,d4	; "ÔøΩ"
 		andi.w	#$1F0,d5
 		lsl.w	#4,d4
 		lsr.w	#2,d5
@@ -7072,7 +7073,7 @@ loc_71A4:				; CODE XREF: LoadTilesFromStart+C6j
 		lea	(byte_71CA).l,a0
 		move.w	(v_bgscreenposy).w,d0
 		add.w	d4,d0
-		andi.w	#$F0,d0	; ""
+		andi.w	#$F0,d0	; "ÔøΩ"
 		bsr.w	sub_7232
 		movem.l	(sp)+,d4-d6
 		addi.w	#$10,d4
@@ -7435,7 +7436,7 @@ loc_7672:				; CODE XREF: ROM:0000766Cj
 		move.w	#$280,$C(a1)
 
 loc_7692:				; CODE XREF: ROM:0000767Ej
-		move.w	#$8C,d0	; "å"
+		move.w	#$8C,d0	; "ÔøΩ"
 		bsr.w	PlaySound
 		move.b	#1,($FFFFF7AA).w
 		addq.b	#2,($FFFFEEDF).w
@@ -7478,7 +7479,7 @@ DynResize_LZ3:				; DATA XREF: ROM:DynResize_LZ_Indexo
 		cmpi.b	#7,(a1)
 		beq.s	loc_76EA
 		move.b	#7,(a1)
-		move.w	#$B7,d0	; "∑"
+		move.w	#$B7,d0	; "ÔøΩ"
 		bsr.w	PlaySound_Special
 
 loc_76EA:				; CODE XREF: ROM:000076D2j
@@ -7494,7 +7495,7 @@ loc_76EA:				; CODE XREF: ROM:000076D2j
 		move.b	#$77,0(a1) ; "w"
 
 loc_770C:				; CODE XREF: ROM:00007704j
-		move.w	#$8C,d0	; "å"
+		move.w	#$8C,d0	; "ÔøΩ"
 		bsr.w	PlaySound
 		move.b	#1,($FFFFF7AA).w
 		addq.b	#2,($FFFFEEDF).w
@@ -7704,7 +7705,7 @@ DynResize_SLZ2_01:			; DATA XREF: ROM:DynResize_SLZ2_Indexo
 		move.w	#$426,$C(a1)
 
 loc_7946:				; CODE XREF: ROM:0000792Ej
-		move.w	#$8C,d0	; "å"
+		move.w	#$8C,d0	; "ÔøΩ"
 		bsr.w	PlaySound
 		move.b	#1,($FFFFF7AA).w
 		moveq	#$11,d0
@@ -7770,7 +7771,7 @@ loc_79AA:				; DATA XREF: ROM:00007992o
 		move.b	#$7A,(a1) ; "z"
 
 loc_79BC:				; CODE XREF: ROM:000079B6j
-		move.w	#$8C,d0	; "å"
+		move.w	#$8C,d0	; "ÔøΩ"
 		bsr.w	PlaySound
 		move.b	#1,($FFFFF7AA).w
 		addq.b	#2,($FFFFEEDF).w
@@ -7857,7 +7858,7 @@ loc_7A48:				; DATA XREF: ROM:00007A2Co
 		addq.b	#2,($FFFFEEDF).w
 
 loc_7A64:				; CODE XREF: ROM:00007A5Aj
-		move.w	#$8C,d0	; "å"
+		move.w	#$8C,d0	; "ÔøΩ"
 		bsr.w	PlaySound
 		move.b	#1,($FFFFF7AA).w
 		moveq	#$11,d0
@@ -9383,7 +9384,7 @@ loc_8A2E:				; CODE XREF: ROM:000089F2j
 		move.l	d3,$2C(a0)
 		addi.w	#$38,$12(a0) ; "8"
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$2C(a0),d0
 		bcc.s	locret_8A5A
 		move.b	#4,$24(a0)
@@ -9783,7 +9784,7 @@ loc_8EE0:				; CODE XREF: ROM:00008EDAj
 
 loc_8EE4:				; CODE XREF: ROM:00008E9Aj
 		bsr.w	DisplaySprite
-		move.w	#$B9,d0	; "π"
+		move.w	#$B9,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------
 byte_8EF2:	dc.b $1C,$18,$14,$10	; 0 ; DATA XREF: ROM:loc_8E58o
@@ -10019,7 +10020,7 @@ loc_93F4:				; DATA XREF: ROM:Obj1C_Indexo
 		move.b	(a1)+,$18(a0)
 		move.b	(a1)+,$20(a0)
 		move.b	$28(a0),d0
-		andi.w	#$F0,d0	; ""
+		andi.w	#$F0,d0	; "ÔøΩ"
 		beq.s	loc_9442
 		addq.b	#2,$24(a0)
 		lsr.b	#4,d0
@@ -10342,7 +10343,7 @@ loc_97E2:				; CODE XREF: ROM:000097CAj
 
 loc_97F4:				; CODE XREF: ROM:000097E6j
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		bcs.w	DeleteObject
 		bra.w	DisplaySprite
@@ -10374,7 +10375,7 @@ loc_981A:				; DATA XREF: ROM:Obj24_Indexo
 		move.b	#$C,$19(a0)
 		move.b	#9,$1E(a0)
 		move.b	#0,$1A(a0)
-		move.w	#$A5,d0	; "•"
+		move.w	#$A5,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_985E:				; DATA XREF: ROM:00009818o
@@ -10425,7 +10426,7 @@ loc_98B2:				; CODE XREF: ROM:00009898j
 		move.b	#$C,$19(a0)
 		move.b	#7,$1E(a0)
 		move.b	#0,$1A(a0)
-		move.w	#$C1,d0	; "¡"
+		move.w	#$C1,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_98F6:				; DATA XREF: ROM:0000988Eo
@@ -10969,7 +10970,7 @@ sub_9F92:				; CODE XREF: ROM:loc_9DEEp
 					; ROM:loc_9E0Ep ...
 		move.w	(v_objspace+8).w,d0
 		sub.w	8(a0),d0
-		subi.w	#$B8,d0	; "∏"
+		subi.w	#$B8,d0	; "ÔøΩ"
 		rts
 ; End of function sub_9F92
 
@@ -11262,7 +11263,7 @@ loc_A2DA:				; DATA XREF: ROM:0000A0E6o
 		bsr.w	AnimateSprite
 		bsr.w	ObjectFall
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		bcs.w	DeleteObject
 		bra.w	DisplaySprite
@@ -11512,7 +11513,7 @@ loc_A5EC:				; DATA XREF: ROM:0000A570o
 		lea	(Ani_Obj33).l,a1
 		bsr.w	AnimateSprite
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		bcs.s	loc_A630
 		bra.w	DisplaySprite
@@ -11680,12 +11681,12 @@ sub_A8DE:				; CODE XREF: ROM:0000A8B6p
 					; ROM:0000AA5Cp ...
 		addq.w	#1,($FFFFFE20).w
 		ori.b	#1,($FFFFFE1D).w
-		move.w	#$B5,d0	; "µ"
+		move.w	#$B5,d0	; "ÔøΩ"
 		cmpi.w	#$64,($FFFFFE20).w ; "d"
 		bcs.s	loc_A918
 		bset	#1,($FFFFFE1B).w
 		beq.s	loc_A90C
-		cmpi.w	#$C8,($FFFFFE20).w ; "»"
+		cmpi.w	#$C8,($FFFFFE20).w ; "ÔøΩ"
 		bcs.s	loc_A918
 		bset	#2,($FFFFFE1B).w
 		bne.s	loc_A918
@@ -11693,7 +11694,7 @@ sub_A8DE:				; CODE XREF: ROM:0000A8B6p
 loc_A90C:				; CODE XREF: sub_A8DE+1Cj
 		addq.b	#1,($FFFFFE12).w
 		addq.b	#1,($FFFFFE1C).w
-		move.w	#$88,d0	; "à"
+		move.w	#$88,d0	; "ÔøΩ"
 
 loc_A918:				; CODE XREF: sub_A8DE+14j sub_A8DE+24j ...
 		jmp	(PlaySound_Special).l
@@ -11780,7 +11781,7 @@ loc_A9DE:				; CODE XREF: ROM:0000A952j
 		move.w	#0,($FFFFFE20).w
 		move.b	#$80,($FFFFFE1D).w
 		move.b	#0,($FFFFFE1B).w
-		move.w	#$C6,d0	; "∆"
+		move.w	#$C6,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_A9FA:				; DATA XREF: ROM:0000A92Eo
@@ -11806,7 +11807,7 @@ loc_AA34:				; CODE XREF: ROM:0000AA0Aj
 		tst.b	($FFFFFEC6).w
 		beq.s	loc_AA6E
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		bcs.s	loc_AA6E
 		bra.w	DisplaySprite
@@ -11895,7 +11896,7 @@ loc_AAF4:				; DATA XREF: ROM:0000AA84o
 
 loc_AB2C:				; CODE XREF: ROM:0000AB02j
 					; ROM:0000AB24j
-		move.w	#$C3,d0	; "√"
+		move.w	#$C3,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		bra.s	loc_AAD6
 ; ---------------------------------------------------------------------------
@@ -12347,14 +12348,14 @@ Monitor_SonicLife:			; CODE XREF: ROM:0000B11Aj
 					; DATA XREF: ...
 		addq.b	#1,($FFFFFE12).w
 		addq.b	#1,($FFFFFE1C).w
-		move.w	#$88,d0	; "à"
+		move.w	#$88,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
 Monitor_TailsLife:			; DATA XREF: ROM:0000B0CAo
 		addq.b	#1,($FFFFFE12).w
 		addq.b	#1,($FFFFFE1C).w
-		move.w	#$88,d0	; "à"
+		move.w	#$88,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
@@ -12365,14 +12366,14 @@ Monitor_Rigns:				; DATA XREF: ROM:0000B0CEo
 		bcs.s	loc_B130
 		bset	#1,($FFFFFE1B).w
 		beq.w	Monitor_SonicLife
-		cmpi.w	#$C8,($FFFFFE20).w ; "»"
+		cmpi.w	#$C8,($FFFFFE20).w ; "ÔøΩ"
 		bcs.s	loc_B130
 		bset	#2,($FFFFFE1B).w
 		beq.w	Monitor_SonicLife
 
 loc_B130:				; CODE XREF: ROM:0000B112j
 					; ROM:0000B124j
-		move.w	#$B5,d0	; "µ"
+		move.w	#$B5,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
@@ -12382,14 +12383,14 @@ Monitor_Shoes:				; DATA XREF: ROM:0000B0D0o
 		move.w	#$C00,($FFFFF760).w
 		move.w	#$18,($FFFFF762).w
 		move.w	#$80,($FFFFF764).w
-		move.w	#$E2,d0	; "‚"
+		move.w	#$E2,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
 Monitor_Shield:				; DATA XREF: ROM:0000B0D2o
 		move.b	#1,($FFFFFE2C).w
 		move.b	#$38,(v_objspace+$180).w ; "8"
-		move.w	#$AF,d0	; "Ø"
+		move.w	#$AF,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
@@ -12408,7 +12409,7 @@ Monitor_Invincibility:			; DATA XREF: ROM:0000B0D4o
 		bne.s	locret_B1A8
 		cmpi.w	#$C,($FFFFFE14).w
 		bls.s	locret_B1A8
-		move.w	#$87,d0	; "á"
+		move.w	#$87,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
@@ -12943,7 +12944,7 @@ loc_B768:				; DATA XREF: ROM:0000B72Co
 
 loc_B790:				; CODE XREF: ROM:0000B784j
 		move.b	#1,$1C(a0)
-		subi.w	#$C0,d0	; "¿"
+		subi.w	#$C0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		bcc.s	locret_B7B2
 		move.b	#0,$1C(a0)
@@ -13601,7 +13602,7 @@ loc_BAA0:				; CODE XREF: ROM:0000BA9Cj
 		move.w	#$1F0,8(a0)
 
 loc_BAB8:				; CODE XREF: ROM:0000BAB0j
-		move.w	#$F0,$A(a0) ; ""
+		move.w	#$F0,$A(a0) ; "ÔøΩ"
 		move.l	#Map_Obj39,4(a0)
 		move.w	#$855E,2(a0)
 		bsr.w	ModifySpriteAttr_2P
@@ -13743,7 +13744,7 @@ loc_BBEA:				; CODE XREF: ROM:0000BBC2j
 		cmpi.b	#4,$1A(a0)
 		bne.s	loc_BBCC
 		addq.b	#2,$24(a0)
-		move.w	#$B4,$1E(a0) ; "¥"
+		move.w	#$B4,$1E(a0) ; "ÔøΩ"
 
 loc_BC04:				; DATA XREF: ROM:0000BB58o
 		subq.w	#1,$1E(a0)
@@ -13772,7 +13773,7 @@ loc_BC30:				; CODE XREF: ROM:0000BC24j
 loc_BC40:				; CODE XREF: ROM:0000BC34j
 		tst.w	d0
 		bne.s	loc_BC66
-		move.w	#$C5,d0	; "≈"
+		move.w	#$C5,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		addq.b	#2,$24(a0)
 		cmpi.w	#$501,(v_zone).w
@@ -13780,7 +13781,7 @@ loc_BC40:				; CODE XREF: ROM:0000BC34j
 		addq.b	#4,$24(a0)
 
 loc_BC5E:				; CODE XREF: ROM:0000BC58j
-		move.w	#$B4,$1E(a0) ; "¥"
+		move.w	#$B4,$1E(a0) ; "ÔøΩ"
 
 locret_BC64:				; CODE XREF: ROM:0000BC74j
 		rts
@@ -13791,7 +13792,7 @@ loc_BC66:				; CODE XREF: ROM:0000BC42j
 		move.b	($FFFFFE0F).w,d0
 		andi.b	#3,d0
 		bne.s	locret_BC64
-		move.w	#$CD,d0	; "Õ"
+		move.w	#$CD,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------
 
@@ -13861,7 +13862,7 @@ loc_BD1E:				; CODE XREF: ROM:0000BD02j
 		bne.w	DeleteObject
 		addq.b	#2,$24(a0)
 		clr.b	($FFFFF7CC).w
-		move.w	#$8D,d0	; "ç"
+		move.w	#$8D,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 		addq.w	#2,($FFFFEECA).w
@@ -13971,7 +13972,7 @@ loc_BE44:				; CODE XREF: ROM:0000BE28j
 		cmpi.b	#2,$1A(a0)
 		bne.s	loc_BE32
 		addq.b	#2,$24(a0)
-		move.w	#$B4,$1E(a0) ; "¥"
+		move.w	#$B4,$1E(a0) ; "ÔøΩ"
 		move.b	#$7F,(v_objspace+$800).w 
 
 loc_BE5C:				; DATA XREF: ROM:0000BD94o
@@ -13995,15 +13996,15 @@ loc_BE6A:				; DATA XREF: ROM:0000BD96o
 		move.b	($FFFFFE0F).w,d0
 		andi.b	#3,d0
 		bne.s	locret_BEC2
-		move.w	#$CD,d0	; "Õ"
+		move.w	#$CD,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------
 
 loc_BE9C:				; CODE XREF: ROM:0000BE78j
-		move.w	#$C5,d0	; "≈"
+		move.w	#$C5,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		addq.b	#2,$24(a0)
-		move.w	#$B4,$1E(a0) ; "¥"
+		move.w	#$B4,$1E(a0) ; "ÔøΩ"
 		cmpi.w	#$32,($FFFFFE20).w ; "2"
 		bcs.s	locret_BEC2
 		move.w	#$3C,$1E(a0) ; "<"
@@ -14023,7 +14024,7 @@ loc_BEC4:				; DATA XREF: ROM:0000BD9Ao
 loc_BECE:				; DATA XREF: ROM:0000BD9Eo
 		move.b	#4,(v_objspace+$6DA).w
 		move.b	#$14,(v_objspace+$6E4).w
-		move.w	#$BF,d0	; "ø"
+		move.w	#$BF,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		addq.b	#2,$24(a0)
 		move.w	#$168,$1E(a0)
@@ -14078,7 +14079,7 @@ loc_BF4C:				; DATA XREF: ROM:S1Obj7F_Indexo
 loc_BF60:				; CODE XREF: ROM:0000BFA2j
 		move.b	#$7F,0(a1) 
 		move.w	(a2)+,8(a1)
-		move.w	#$F0,$A(a1) ; ""
+		move.w	#$F0,$A(a1) ; "ÔøΩ"
 		lea	($FFFFFE58).w,a3
 		move.b	(a3,d2.w),d3
 		move.b	d3,$1A(a1)
@@ -14414,7 +14415,7 @@ loc_C682:				; DATA XREF: ROM:Obj36_Indexo
 		move.b	#4,$18(a0)
 		move.b	$28(a0),d0
 		andi.b	#$F,$28(a0)
-		andi.w	#$F0,d0	; ""
+		andi.w	#$F0,d0	; "ÔøΩ"
 		lea	Obj36_Conf(pc),a1
 		lsr.w	#3,d0
 		adda.w	d0,a1
@@ -14457,7 +14458,7 @@ loc_C70C:				; CODE XREF: ROM:0000C6E4j
 		btst	#3,$22(a0)
 		bne.s	loc_C736
 		swap	d6
-		andi.w	#$C0,d6	; "¿"
+		andi.w	#$C0,d6	; "ÔøΩ"
 		beq.s	loc_C766
 
 loc_C736:				; CODE XREF: ROM:0000C708j
@@ -14545,7 +14546,7 @@ sub_C7C8:				; CODE XREF: ROM:loc_C7A0p
 		bne.s	locret_C828
 		tst.b	1(a0)
 		bpl.s	locret_C828
-		move.w	#$B6,d0	; "∂"
+		move.w	#$B6,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		bra.s	locret_C828
 ; ---------------------------------------------------------------------------
@@ -14776,7 +14777,7 @@ loc_CA18:				; CODE XREF: sub_C99E+66j
 		dbf	d1,loc_C9C2
 
 loc_CA1C:				; CODE XREF: sub_C99E+28j
-		move.w	#$CB,d0	; "À"
+		move.w	#$CB,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function sub_C99E
 
@@ -15439,7 +15440,7 @@ loc_D034:				; CODE XREF: BuildSprites+F2j
 		bmi.s	loc_D0FA
 		move.w	d2,d1
 		sub.w	d0,d1
-		cmpi.w	#$E0,d1	; "‡"
+		cmpi.w	#$E0,d1	; "ÔøΩ"
 		bge.s	loc_D0FA
 		addi.w	#$80,d2
 		bra.s	loc_D0D4
@@ -15793,7 +15794,7 @@ loc_D342:				; CODE XREF: BuildSprites+3FEj
 		bmi.s	loc_D406
 		move.w	d2,d1
 		sub.w	d0,d1
-		cmpi.w	#$E0,d1	; "‡"
+		cmpi.w	#$E0,d1	; "ÔøΩ"
 		bge.s	loc_D406
 		addi.w	#$100,d2
 		bra.s	loc_D3E0
@@ -15916,7 +15917,7 @@ loc_D462:				; CODE XREF: BuildSprites+518j
 		bmi.s	loc_D520
 		move.w	d2,d1
 		sub.w	d0,d1
-		cmpi.w	#$E0,d1	; "‡"
+		cmpi.w	#$E0,d1	; "ÔøΩ"
 		bge.s	loc_D520
 		addi.w	#$1E0,d2
 		bra.s	loc_D4FA
@@ -16325,7 +16326,7 @@ ChkObjOnScreen:
 		move.w	$C(a0),d1
 		sub.w	(v_screenposy).w,d1
 		bmi.s	loc_D82E
-		cmpi.w	#$E0,d1	; "‡"
+		cmpi.w	#$E0,d1	; "ÔøΩ"
 		bge.s	loc_D82E
 		moveq	#0,d0
 		rts
@@ -16351,7 +16352,7 @@ ChkObjOnScreen2:
 		move.w	$C(a0),d1
 		sub.w	(v_screenposy).w,d1
 		bmi.s	loc_D862
-		cmpi.w	#$E0,d1	; "‡"
+		cmpi.w	#$E0,d1	; "ÔøΩ"
 		bge.s	loc_D862
 		moveq	#0,d0
 		rts
@@ -16640,7 +16641,7 @@ loc_DA4A:				; CODE XREF: BuildSprites2+76j
 		sub.w	4(a3),d2
 		addi.w	#8,d2
 		bmi.s	loc_DAA8
-		cmpi.w	#$F0,d2	; ""
+		cmpi.w	#$F0,d2	; "ÔøΩ"
 		bge.s	loc_DAA8
 		addi.w	#$78,d2	; "x"
 		lea	(off_DC04).l,a1
@@ -16712,7 +16713,7 @@ loc_DAE0:				; CODE XREF: BuildSprites2_2p+12j
 		addi.w	#$80,d3
 		move.w	4(a0),d2
 		sub.w	4(a3),d2
-		addi.w	#$88,d2	; "à"
+		addi.w	#$88,d2	; "ÔøΩ"
 		bmi.s	loc_DB40
 		cmpi.w	#$170,d2
 		bge.s	loc_DB40
@@ -16814,7 +16815,7 @@ loc_DBCC:				; CODE XREF: RingPosLoad2+2Ej
 		moveq	#$FFFFFFFF,d0
 		move.l	d0,(a2)+
 		lea	(v_rpl_data+2).w,a1
-		move.w	#$FE,d3	; "˛"
+		move.w	#$FE,d3	; "ÔøΩ"
 
 loc_DBD8:				; CODE XREF: RingPosLoad2+A2j
 		move.w	d3,d4
@@ -17773,7 +17774,7 @@ loc_E3D8:				; CODE XREF: sub_E34E+7Cj
 		move.b	#$F,$3F(a1)
 
 loc_E3EA:				; CODE XREF: sub_E34E+8Ej
-		move.w	#$CC,d0	; "Ã"
+		move.w	#$CC,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function sub_E34E
 
@@ -17890,7 +17891,7 @@ loc_E530:				; CODE XREF: sub_E474+AEj
 		bclr	#5,$22(a0)
 		bclr	#6,$22(a0)
 		bclr	#5,$22(a1)
-		move.w	#$CC,d0	; "Ã"
+		move.w	#$CC,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function sub_E474
 
@@ -18045,7 +18046,7 @@ loc_E6D6:				; CODE XREF: sub_E64E+7Aj
 		bset	#1,$22(a1)
 		bclr	#3,$22(a1)
 		move.b	#2,$24(a1)
-		move.w	#$CC,d0	; "Ã"
+		move.w	#$CC,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function sub_E64E
 
@@ -18151,7 +18152,7 @@ loc_E80C:				; CODE XREF: sub_E73E+C0j
 		move.b	#$F,$3F(a1)
 
 loc_E81E:				; CODE XREF: sub_E73E+D2j
-		move.w	#$CC,d0	; "Ã"
+		move.w	#$CC,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function sub_E73E
 
@@ -18239,7 +18240,7 @@ loc_E918:				; CODE XREF: sub_E870+9Aj
 		move.b	#$F,$3F(a1)
 
 loc_E92A:				; CODE XREF: sub_E870+ACj
-		move.w	#$CC,d0	; "Ã"
+		move.w	#$CC,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function sub_E870
 
@@ -18736,7 +18737,7 @@ loc_EFFE:				; DATA XREF: ROM:0000EFCEo
 		bcs.s	locret_F026
 		cmpi.w	#$20,d0	
 		bcc.s	locret_F026
-		move.w	#$CF,d0	; "œ"
+		move.w	#$CF,d0	; "ÔøΩ"
 		jsr	(PlaySound).l
 		clr.b	($FFFFFE1E).w
 		move.w	($FFFFEECA).w,($FFFFEEC8).w
@@ -18846,7 +18847,7 @@ loc_F140:				; CODE XREF: GotThroughAct+42j
 		move.w	($FFFFFE20).w,d0
 		mulu.w	#$A,d0
 		move.w	d0,($FFFFF7D4).w
-		move.w	#$8E,d0	; "é"
+		move.w	#$8E,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 locret_F15E:				; CODE XREF: ROM:0000F0C8j
@@ -20529,7 +20530,7 @@ Obj61_Type01:				; XREF: Obj61_TypeIndex
 		bne.s	loc_120D6	; if yes, branch
 		btst	#3,$22(a0)
 		beq.s	locret_120D4
-		move.w	#30,$36(a0)	; wait for ´ second
+		move.w	#30,$36(a0)	; wait for ÔøΩ second
 
 locret_120D4:
 		rts	
@@ -21375,7 +21376,7 @@ loc_FB7A:				; CODE XREF: Sonic_Display+18j
 		move.w	#$C,($FFFFF762).w
 		move.w	#$80,($FFFFF764).w 
 		move.b	#0,($FFFFFE2E).w
-		move.w	#$E3,d0	; "„"
+		move.w	#$E3,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
@@ -21431,7 +21432,7 @@ Obj01_InLevelWithWater:			; CODE XREF: Sonic_Water+4j
 		asr	$12(a0)
 		beq.s	locret_FC0A
 		move.b	#8,(v_objspace+$300).w
-		move.w	#$AA,d0	; "™"
+		move.w	#$AA,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------
 
@@ -21450,7 +21451,7 @@ Obj01_NotInWater:			; CODE XREF: Sonic_Water+10j
 		move.w	#$F000,$12(a0)
 
 loc_FC98:				; CODE XREF: Sonic_Water+8Cj
-		move.w	#$AA,d0	; "™"
+		move.w	#$AA,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function Sonic_Water
 
@@ -21710,7 +21711,7 @@ Sonic_WallRecoil_Right:			; CODE XREF: Sonic_Move+1D2j
 		move.w	#0,$14(a0)
 		move.b	#$1A,$1C(a0)
 		move.b	#1,$25(a0)
-		move.w	#$A3,d0	; "£"
+		move.w	#$A3,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		rts
 ; End of function Sonic_Move
@@ -21759,7 +21760,7 @@ loc_FF78:				; CODE XREF: Sonic_MoveLeft+36j
 		blt.s	locret_FFA6
 		move.b	#$D,$1C(a0)
 		bclr	#0,$22(a0)
-		move.w	#$A4,d0	; "§"
+		move.w	#$A4,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 locret_FFA6:				; CODE XREF: Sonic_MoveLeft+4Cj
@@ -21808,7 +21809,7 @@ loc_FFDE:				; CODE XREF: Sonic_MoveRight+30j
 
 loc_FFFC:
 		bset	#0,$22(a0)
-		move.w	#$A4,d0	; "§"
+		move.w	#$A4,d0	; "ÔøΩ"
 
 loc_10006:
 		jsr	(PlaySound_Special).l
@@ -22050,7 +22051,7 @@ loc_101C0:				; CODE XREF: Sonic_LevelBoundaries+28j
 
 loc_101C4:				; CODE XREF: Sonic_LevelBoundaries+7Ej
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		blt.s	loc_101D4
 		rts
@@ -22113,7 +22114,7 @@ Obj01_DoRoll:				; CODE XREF: Sonic_Roll+2Ej
 		move.b	#7,$17(a0)
 		move.b	#2,$1C(a0)
 		addq.w	#5,$C(a0)
-		move.w	#$BE,d0	; "æ"
+		move.w	#$BE,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		tst.w	$14(a0)
 		bne.s	locret_10276
@@ -22159,7 +22160,7 @@ loc_102AA:				; CODE XREF: Sonic_Jump+2Cj
 		addq.l	#4,sp
 		move.b	#1,$3C(a0)
 		clr.b	$38(a0)
-		move.w	#$A0,d0	; "†"
+		move.w	#$A0,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		move.b	#$13,$16(a0)
 		move.b	#9,$17(a0)
@@ -22229,7 +22230,7 @@ Sonic_Spindash:				; CODE XREF: ROM:Obj01_MdNormalp
 		andi.b	#$70,d0	; "p"
 		beq.w	locret_10394
 		move.b	#9,$1C(a0)
-		move.w	#$BE,d0	; "æ"
+		move.w	#$BE,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		addq.l	#4,sp
 		move.b	#1,$39(a0)
@@ -22704,7 +22705,7 @@ loc_1077E:				; CODE XREF: ROM:00010776j
 
 Sonic_HurtStop:				; CODE XREF: ROM:loc_1077Ep
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		bcs.w	j_KillSonic
 		bsr.w	Sonic_Floor
@@ -22779,7 +22780,7 @@ Sonic_GameOver:				; CODE XREF: ROM:Obj01_Deathp
 		clr.b	($FFFFFE1A).w
 
 loc_10876:				; CODE XREF: Sonic_GameOver+80j
-		move.w	#$8F,d0	; "è"
+		move.w	#$8F,d0	; "ÔøΩ"
 		jsr	(PlaySound).l
 		moveq	#3,d0
 		jmp	(LoadPLC).l
@@ -23190,7 +23191,7 @@ loc_10C08:				; CODE XREF: LoadSonicDynPLC+4Ej
 		move.w	(a2)+,d1
 		move.w	d1,d3
 		lsr.w	#8,d3
-		andi.w	#$F0,d3	; ""
+		andi.w	#$F0,d3	; "ÔøΩ"
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
 		lsl.l	#5,d1
@@ -23335,7 +23336,7 @@ loc_10D68:				; CODE XREF: Tails_Display+18j
 		move.w	#$C,($FFFFF762).w
 		move.w	#$80,($FFFFF764).w 
 		move.b	#0,($FFFFFE2E).w
-		move.w	#$E3,d0	; "„"
+		move.w	#$E3,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
@@ -23419,7 +23420,7 @@ TailsC_CopySonicMoves:			; DATA XREF: ROM:00010DD4o
 		neg.w	d0
 
 loc_10E38:				; CODE XREF: ROM:00010E34j
-		cmpi.w	#$C0,d0	; "¿"
+		cmpi.w	#$C0,d0	; "ÔøΩ"
 		bcs.s	loc_10E40
 		nop
 
@@ -23725,7 +23726,7 @@ loc_110F2:				; CODE XREF: Tails_MoveLeft+36j
 		blt.s	locret_11120
 		move.b	#$D,$1C(a0)
 		bclr	#0,$22(a0)
-		move.w	#$A4,d0	; "§"
+		move.w	#$A4,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 locret_11120:				; CODE XREF: Tails_MoveLeft+4Cj
@@ -23772,7 +23773,7 @@ loc_11158:				; CODE XREF: Tails_MoveRight+30j
 		bgt.s	locret_11186
 		move.b	#$D,$1C(a0)
 		bset	#0,$22(a0)
-		move.w	#$A4,d0	; "§"
+		move.w	#$A4,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 locret_11186:				; CODE XREF: Tails_MoveRight+46j
@@ -24012,7 +24013,7 @@ loc_1133A:				; CODE XREF: Tails_LevelBoundaries+28j
 
 loc_1133E:				; CODE XREF: Tails_LevelBoundaries+7Ej
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		blt.s	loc_1134E
 		rts
@@ -24075,7 +24076,7 @@ loc_113BE:				; CODE XREF: Tails_Roll+2Ej
 		move.b	#7,$17(a0)
 		move.b	#2,$1C(a0)
 		addq.w	#5,$C(a0)
-		move.w	#$BE,d0	; "æ"
+		move.w	#$BE,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		tst.w	$14(a0)
 		bne.s	locret_113F0
@@ -24125,7 +24126,7 @@ loc_11424:				; CODE XREF: Tails_Jump+2Cj
 		addq.l	#4,sp
 		move.b	#1,$3C(a0)
 		clr.b	$38(a0)
-		move.w	#$A0,d0	; "†"
+		move.w	#$A0,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		move.b	#$F,$16(a0)
 		move.b	#9,$17(a0)
@@ -24195,7 +24196,7 @@ Tails_Spindash:				; CODE XREF: ROM:Obj02_MdNormalp
 		andi.b	#$70,d0	; "p"
 		beq.w	locret_1150E
 		move.b	#9,$1C(a0)
-		move.w	#$BE,d0	; "æ"
+		move.w	#$BE,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		addq.l	#4,sp
 		move.b	#1,$39(a0)
@@ -24659,7 +24660,7 @@ loc_118D8:				; CODE XREF: ROM:000118D0j
 
 Tails_HurtStop:				; CODE XREF: ROM:loc_118D8p
 		move.w	($FFFFEECE).w,d0
-		addi.w	#$E0,d0	; "‡"
+		addi.w	#$E0,d0	; "ÔøΩ"
 		cmp.w	$C(a0),d0
 		bcs.w	KillTails
 		bsr.w	Tails_Floor
@@ -25093,7 +25094,7 @@ loc_11D50:				; CODE XREF: LoadTailsDynPLC_F600+26j
 		move.w	(a2)+,d1
 		move.w	d1,d3
 		lsr.w	#8,d3
-		andi.w	#$F0,d3	; ""
+		andi.w	#$F0,d3	; "ÔøΩ"
 		addi.w	#$10,d3
 		andi.w	#$FFF,d1
 		lsl.l	#5,d1
@@ -25392,7 +25393,7 @@ Obj0A_Countdown:			; CODE XREF: ROM:00011EC8j
 		cmpi.w	#$C,d0
 		bhi.s	loc_12170
 		bne.s	loc_12152
-		move.w	#$92,d0	; "í"
+		move.w	#$92,d0	; "ÔøΩ"
 		jsr	(PlaySound).l
 
 loc_12152:				; CODE XREF: ROM:00012146j
@@ -25405,7 +25406,7 @@ loc_12152:				; CODE XREF: ROM:00012146j
 
 loc_12166:				; CODE XREF: ROM:00012132j
 					; ROM:00012138j ...
-		move.w	#$C2,d0	; "¬"
+		move.w	#$C2,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_12170:				; CODE XREF: ROM:00012144j
@@ -25414,7 +25415,7 @@ loc_12170:				; CODE XREF: ROM:00012144j
 		bcc.w	loc_121FA
 		bsr.w	ResumeMusic
 		move.b	#$81,($FFFFF7C8).w
-		move.w	#$B2,d0	; "≤"
+		move.w	#$B2,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		move.b	#$A,$34(a0)
 		move.w	#1,$36(a0)
@@ -25532,20 +25533,20 @@ ResumeMusic:				; CODE XREF: Sonic_Water+1Ap
 					; Sonic_Water+62p ...
 		cmpi.w	#$C,($FFFFFE14).w
 		bhi.s	loc_12310
-		move.w	#$82,d0	; "Ç"
+		move.w	#$82,d0	; "ÔøΩ"
 		cmpi.w	#$103,(v_zone).w
 		bne.s	loc_122F6
-		move.w	#$86,d0	; "Ü"
+		move.w	#$86,d0	; "ÔøΩ"
 
 loc_122F6:				; CODE XREF: ResumeMusic+12j
 		tst.b	($FFFFFE2D).w
 		beq.s	loc_12300
-		move.w	#$87,d0	; "á"
+		move.w	#$87,d0	; "ÔøΩ"
 
 loc_12300:				; CODE XREF: ResumeMusic+1Cj
 		tst.b	($FFFFF7AA).w
 		beq.s	loc_1230A
-		move.w	#$8C,d0	; "å"
+		move.w	#$8C,d0	; "ÔøΩ"
 
 loc_1230A:				; CODE XREF: ResumeMusic+26j
 		jsr	(PlaySound).l
@@ -25723,7 +25724,7 @@ S1Obj4A_RmvSonic:			; DATA XREF: ROM:000124C8o
 		tst.b	(v_objspace).w
 		beq.s	loc_1253E
 		move.b	#0,(v_objspace).w
-		move.w	#$A8,d0	; "®"
+		move.w	#$A8,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_1253E:				; CODE XREF: ROM:00012526j
@@ -27268,7 +27269,7 @@ Obj79_HitLamp:				; CODE XREF: ROM:00013566j
 		addi.w	#$40,d0	
 		cmpi.w	#$68,d0	; "h"
 		bcc.s	locret_135CA
-		move.w	#$A1,d0	; "°"
+		move.w	#$A1,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		addq.b	#2,obRoutine(a0)
 		jsr	(S1SingleObjectLoad2).l
@@ -27389,7 +27390,7 @@ loc_136F0:				; CODE XREF: Lamppost_LoadInfo+84j
 		tst.b	($FFFFFE30).w
 		bpl.s	locret_13702
 		move.w	($FFFFFE32).w,d0
-		subi.w	#$A0,d0	; "†"
+		subi.w	#$A0,d0	; "ÔøΩ"
 		move.w	d0,($FFFFEEC8).w
 
 locret_13702:				; CODE XREF: Lamppost_LoadInfo+9Cj
@@ -27474,7 +27475,7 @@ Obj7D_Main:				; DATA XREF: ROM:Obj7D_Indexo
 		move.b	#$10,$19(a0)
 		move.b	$28(a0),$1A(a0)
 		move.w	#$77,$30(a0) ; "w"
-		move.w	#$C9,d0	; "…"
+		move.w	#$C9,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		moveq	#0,d0
 		move.b	$28(a0),d0
@@ -27589,7 +27590,7 @@ S1Obj47_Bump:				; CODE XREF: ROM:000138C8p
 		bclr	#5,$22(a1)
 		clr.b	$3C(a1)
 		move.b	#1,$1C(a0)
-		move.w	#$B4,d0	; "¥"
+		move.w	#$B4,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		lea	($FFFFFC00).w,a2
 		moveq	#0,d0
@@ -27717,7 +27718,7 @@ loc_13A7E:				; CODE XREF: ROM:00013A6Ej
 		bsr.w	S1Obj64_ChkSonic
 		beq.s	loc_13B0A
 		bsr.w	ResumeMusic
-		move.w	#$AD,d0	; "≠"
+		move.w	#$AD,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		lea	(v_objspace).w,a1
 		clr.w	$10(a1)
@@ -28119,7 +28120,7 @@ loc_13F92:				; CODE XREF: ROM:00013F58j
 					; ROM:00013F60j ...
 		tst.w	($FFFFFFFA).w
 		beq.s	loc_13FA2
-		move.w	#$A1,d0	; "°"
+		move.w	#$A1,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_13FA2:				; CODE XREF: ROM:00013F24j
@@ -28220,7 +28221,7 @@ loc_14094:				; CODE XREF: ROM:0001405Aj
 					; ROM:00014062j ...
 		tst.w	($FFFFFFFA).w
 		beq.s	loc_140A4
-		move.w	#$A1,d0	; "°"
+		move.w	#$A1,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_140A4:				; CODE XREF: ROM:00014026j
@@ -28633,7 +28634,7 @@ sub_14FC4:				; CODE XREF: ROM:00014FA6p
 		clr.b	$3C(a2)
 		move.b	#$10,$1C(a2)
 		move.b	#2,$24(a2)
-		move.w	#$CC,d0	; "Ã"
+		move.w	#$CC,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; End of function sub_14FC4
 
@@ -29376,7 +29377,7 @@ Obj50_Init:				; DATA XREF: ROM:Obj50_Indexo
 		move.w	#$FF00,$10(a0)
 		move.b	$28(a0),d0
 		move.b	d0,d1
-		andi.w	#$F0,d1	; ""
+		andi.w	#$F0,d1	; "ÔøΩ"
 		lsl.w	#4,d1
 		move.w	d1,$2E(a0)
 		move.w	d1,$30(a0)
@@ -29825,7 +29826,7 @@ loc_16306:				; CODE XREF: ROM:loc_16378j
 		cmpi.w	#1,d3
 		beq.s	loc_16372
 		blt.s	loc_16364
-		move.w	#$C0,$10(a1) ; "¿"
+		move.w	#$C0,$10(a1) ; "ÔøΩ"
 		addi.w	#$FF40,$12(a1)
 		bra.s	loc_16378
 ; ---------------------------------------------------------------------------
@@ -30058,7 +30059,7 @@ loc_16600:				; CODE XREF: ROM:000165FAp
 loc_16614:				; CODE XREF: ROM:00016604j
 		subq.b	#2,$25(a0)
 		move.b	#6,$1C(a0)
-		move.w	#$B4,$30(a0) ; "¥"
+		move.w	#$B4,$30(a0) ; "ÔøΩ"
 		rts
 ; ---------------------------------------------------------------------------
 
@@ -30956,7 +30957,7 @@ sub_16EB0:				; CODE XREF: ROM:00016E14p
 		bne.s	loc_16ECA
 		moveq	#0,d0
 		move.b	$3F(a0),d0
-		cmpi.w	#$C0,d0	; "¿"
+		cmpi.w	#$C0,d0	; "ÔøΩ"
 		bge.s	loc_16EDE
 		addq.b	#2,d0
 		move.b	d0,$3F(a0)
@@ -30966,7 +30967,7 @@ sub_16EB0:				; CODE XREF: ROM:00016E14p
 loc_16ECA:				; CODE XREF: sub_16EB0+4j
 		moveq	#0,d0
 		move.b	$3F(a0),d0
-		cmpi.w	#$C0,d0	; "¿"
+		cmpi.w	#$C0,d0	; "ÔøΩ"
 		beq.s	loc_16EDE
 		subq.b	#2,d0
 		move.b	d0,$3F(a0)
@@ -31222,6 +31223,10 @@ loc_FE60:
 		andi.b	#$F,$28(a0)
 
 Obj52_Platform:				; XREF: Obj52_Index
+; Obj52BUG:
+; The calls to Obj52_Move need to first backup A1 (to prevent it being overwritten)
+; and then restore it once it ends; unfortunately, turns out I have absolutely no
+; idea how to backup variables, so for now, it is like this ~ AF
 		lea	(v_objspace).l,a1
 		bsr.w	Obj52_Move
 		moveq	#0,d1
@@ -32190,7 +32195,7 @@ off_185EE:	dc.w loc_185F2-off_185EE ; DATA	XREF: ROM:off_185EEo
 loc_185F2:				; DATA XREF: ROM:off_185EEo
 		addq.b	#2,$24(a0)
 		move.w	#$120,8(a0)
-		move.w	#$F0,$A(a0) ; ""
+		move.w	#$F0,$A(a0) ; "ÔøΩ"
 		move.l	#Map_Obj8A,4(a0)
 		move.w	#$5A0,2(a0)
 		bsr.w	j_ModifySpriteAttr_2P_4
@@ -32554,7 +32559,7 @@ loc_18DE4:				; CODE XREF: ROM:00018DD8j
 		tst.b	$3E(a0)
 		bne.s	loc_18E2C
 		move.b	#$20,$3E(a0) 
-		move.w	#$AC,d0	; "¨"
+		move.w	#$AC,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 loc_18E2C:				; CODE XREF: ROM:00018E1Aj
@@ -32579,7 +32584,7 @@ loc_18E4A:				; CODE XREF: ROM:00018E0Ej
 		moveq	#$64,d0	; "d"
 		bsr.w	AddPoints
 		move.b	#8,$25(a0)
-		move.w	#$B3,$3C(a0) ; "≥"
+		move.w	#$B3,$3C(a0) ; "ÔøΩ"
 		rts
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -32745,7 +32750,7 @@ loc_18FD8:				; CODE XREF: ROM:00018FC6j
 
 loc_18FE0:				; CODE XREF: ROM:00018FC8j
 		clr.w	$12(a0)
-		move.w	#$81,d0	; "Å"
+		move.w	#$81,d0	; "ÔøΩ"
 		jsr	(PlaySound).l
 
 loc_18FEE:				; CODE XREF: ROM:00018FB8j
@@ -33303,10 +33308,10 @@ loc_19668:				; CODE XREF: ROM:00019664j
 		move.b	#2,($FFFFF7A7).w
 		move.b	#$C,$24(a0)
 		move.b	#6,$1A(a0)
-		move.w	#$96,$1E(a0) ; "ñ"
+		move.w	#$96,$1E(a0) ; "ÔøΩ"
 		addi.w	#$20,$C(a0) 
 		moveq	#7,d6
-		move.w	#$9A,d5	; "ö"
+		move.w	#$9A,d5	; "ÔøΩ"
 		moveq	#$FFFFFFE4,d4
 
 loc_1968E:				; CODE XREF: ROM:000196B4j
@@ -33350,7 +33355,7 @@ loc_196F8:				; CODE XREF: ROM:000196C0j
 		subq.w	#1,$1E(a0)
 		bne.s	locret_19708
 		addq.b	#2,$24(a0)
-		move.w	#$B4,$1E(a0) ; "¥"
+		move.w	#$B4,$1E(a0) ; "ÔøΩ"
 
 locret_19708:				; CODE XREF: ROM:000196FCj
 		rts
@@ -33715,12 +33720,12 @@ Hurt_ChkSpikes:				; CODE XREF: HurtSonic+66j
 		move.w	#0,$14(a0)
 		move.b	#$1A,$1C(a0)
 		move.w	#$78,$30(a0) ; "x"
-		move.w	#$A3,d0	; "£"
+		move.w	#$A3,d0	; "ÔøΩ"
 		cmpi.b	#$36,(a2) ; "6"
 		bne.s	loc_19A98
 		cmpi.b	#$16,(a2)
 		bne.s	loc_19A98
-		move.w	#$A6,d0	; "¶"
+		move.w	#$A6,d0	; "ÔøΩ"
 
 loc_19A98:				; CODE XREF: HurtSonic+86j
 					; HurtSonic+8Cj
@@ -33752,10 +33757,10 @@ KillSonic:				; CODE XREF: sub_F456+268p
 		move.w	$C(a0),$38(a0)
 		move.b	#$18,$1C(a0)
 		bset	#7,2(a0)
-		move.w	#$A3,d0	; "£"
+		move.w	#$A3,d0	; "ÔøΩ"
 		cmpi.b	#$36,(a2) ; "6"
 		bne.s	loc_19AF8
-		move.w	#$A6,d0	; "¶"
+		move.w	#$A6,d0	; "ÔøΩ"
 
 loc_19AF8:				; CODE XREF: KillSonic+48j
 		jsr	(PlaySound_Special).l
@@ -33932,7 +33937,7 @@ loc_19C42:				; CODE XREF: S1SS_ShowLayout+11Cj
 		cmpi.w	#$1D0,d3
 		bcc.s	loc_19C9A
 		move.w	2(a4),d2
-		addi.w	#$F0,d2	; ""
+		addi.w	#$F0,d2	; "ÔøΩ"
 		cmpi.w	#$70,d2	; "p"
 		bcs.s	loc_19C9A
 		cmpi.w	#$170,d2
@@ -34250,7 +34255,7 @@ loc_1A006:				; DATA XREF: ROM:00019F32o
 		clr.l	(a0)
 		clr.l	4(a0)
 		move.b	#4,(v_objspace+$24).w
-		move.w	#$A8,d0	; "®"
+		move.w	#$A8,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 locret_1A03E:				; CODE XREF: ROM:0001A00Aj
@@ -34933,7 +34938,7 @@ Obj09_Jump:				; CODE XREF: ROM:Obj09_OnWallp
 		asr.l	#8,d0
 		move.w	d0,$12(a0)
 		bset	#1,$22(a0)
-		move.w	#$A0,d0	; "†"
+		move.w	#$A0,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 
 locret_1A5D0:				; CODE XREF: Obj09_Jump+8j
@@ -34969,7 +34974,7 @@ S1SS_FixCamera:				; CODE XREF: ROM:0001A3BEp
 		move.w	$C(a0),d2
 		move.w	8(a0),d3
 		move.w	(v_screenposx).w,d0
-		subi.w	#$A0,d3	; "†"
+		subi.w	#$A0,d3	; "ÔøΩ"
 		bcs.s	loc_1A606
 		sub.w	d3,d0
 		sub.w	d0,(v_screenposx).w
@@ -35186,7 +35191,7 @@ loc_1A7D8:				; CODE XREF: Obj09_ChkItems+44j
 		bset	#0,($FFFFFE1B).w
 		bne.s	loc_1A7FC
 		addq.b	#1,($FFFFFE18).w
-		move.w	#$BF,d0	; "ø"
+		move.w	#$BF,d0	; "ÔøΩ"
 		jsr	(PlaySound).l
 
 loc_1A7FC:				; CODE XREF: Obj09_ChkItems+5Aj
@@ -35206,7 +35211,7 @@ loc_1A800:				; CODE XREF: Obj09_ChkItems+3Ej
 loc_1A814:				; CODE XREF: Obj09_ChkItems+80j
 		addq.b	#1,($FFFFFE12).w
 		addq.b	#1,($FFFFFE1C).w
-		move.w	#$88,d0	; "à"
+		move.w	#$88,d0	; "ÔøΩ"
 		jsr	(PlaySound).l
 		moveq	#0,d4
 		rts
@@ -35233,7 +35238,7 @@ loc_1A844:				; CODE XREF: Obj09_ChkItems+B0j
 		addq.b	#1,($FFFFFE57).w
 
 loc_1A862:				; CODE XREF: Obj09_ChkItems+C0j
-		move.w	#$93,d0	; "ì"
+		move.w	#$93,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		moveq	#0,d4
 		rts
@@ -35336,7 +35341,7 @@ loc_1A8E6:				; CODE XREF: OBj09_ChkItems2+4j
 		move.l	d0,4(a2)
 
 loc_1A954:				; CODE XREF: OBj09_ChkItems2+7Ej
-		move.w	#$B4,d0	; "¥"
+		move.w	#$B4,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------
 
@@ -35344,7 +35349,7 @@ loc_1A95E:				; CODE XREF: OBj09_ChkItems2+24j
 		cmpi.b	#$27,d0	; """
 		bne.s	loc_1A974
 		addq.b	#2,$24(a0)
-		move.w	#$A8,d0	; "®"
+		move.w	#$A8,d0	; "ÔøΩ"
 		jsr	(PlaySound_Special).l
 		rts
 ; ---------------------------------------------------------------------------
@@ -35432,7 +35437,7 @@ loc_1AA4A:				; CODE XREF: OBj09_ChkItems2+180j
 		move.b	d0,4(a2)
 
 loc_1AA4E:				; CODE XREF: OBj09_ChkItems2+168j
-		move.w	#$BA,d0	; "∫"
+		move.w	#$BA,d0	; "ÔøΩ"
 		jmp	(PlaySound_Special).l
 ; ---------------------------------------------------------------------------
 
@@ -35564,7 +35569,7 @@ Obj21_Index:	dc.w Obj21_Init-Obj21_Index ; DATA XREF: ROM:Obj21_Indexo
 
 Obj21_Init:				; DATA XREF: ROM:Obj21_Indexo
 		addq.b	#2,$24(a0)
-		move.w	#$90,8(a0) ; "ê"
+		move.w	#$90,8(a0) ; "ÔøΩ"
 		move.w	#$108,$A(a0)
 		move.l	#Map_HUD,4(a0)
 		move.w	#$6CA,2(a0)
@@ -35626,7 +35631,7 @@ loc_1B214:				; CODE XREF: AddPoints+14j
 		bmi.s	locret_1B23C
 		addq.b	#1,($FFFFFE12).w
 		addq.b	#1,($FFFFFE1C).w
-		move.w	#$88,d0	; "à"
+		move.w	#$88,d0	; "ÔøΩ"
 		jmp	(PlaySound).l
 ; ---------------------------------------------------------------------------
 
