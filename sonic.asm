@@ -1,3 +1,10 @@
+; 15/5/23_A
+; Removed FloorLog_Unk (completely useless)
+; Optimized ObjPos_Index table
+; Optimized LevelLayout_Index table
+; Labyrinth's converyers now read a separate object index table
+; Added some more levels to SonLVL
+
 ; 4/04/23_A
 ; Partially restored Sonic 1 credits
 ; Fixed Orbinauts crashing the game; now appears correctly in their respective zones
@@ -27,7 +34,7 @@
 ; ===========================================================================
 ; KNOWN ISSUES:
 ; Flat platforms in LZ cause chunk corruption (Obj52BUG)
-; Need to find chunks to change in LZ3
+; Need to find chunks to change in LZ3 and ending sequence
 ; Background scrolling is extremely glitched; only GHZ and SBZ seem to work fine; needs further research to fix
 ; Special Stages have a chance to trigger Ashura
 
@@ -3558,7 +3565,6 @@ loc_3D2A:				; CODE XREF: ROM:00003CCAj
 		bsr.w	MainLevelLoadBlock
 		jsr	(LoadMap16Delta).l
 		bsr.w	LoadTilesFromStart
-		jsr	(FloorLog_Unk).l
 		bsr.w	ColIndexLoad
 		bsr.w	WaterEffects
 		move.b	#1,(v_objspace).w
@@ -7239,16 +7245,15 @@ loc_738E:				; CODE XREF: LevelLayoutLoad+Cj
 
 
 LevelLayoutLoad2:			; CODE XREF: LevelLayoutLoad+16p
+		moveq	#0,d0
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
-		lsr.w	#5,d0
-		move.w	d0,d2
-		add.w	d0,d0
-		add.w	d2,d0
-		add.w	d1,d0
+		lsr.w	#4,d0
+		add.w	d1,d0				; DON'T DELETE THIS! It loads the background!
 		lea	(LevelLayout_Index).l,a1
 		move.w	(a1,d0.w),d0
-		lea	(a1,d0.w),a1
+		lea	(a1,d0.l),a1
+
 		moveq	#0,d1
 		move.w	d1,d2
 		move.b	(a1)+,d1
@@ -16881,7 +16886,7 @@ loc_DC68:				; DATA XREF: ROM:OPL_Indexo
 		addq.b	#2,($FFFFF76C).w
 		move.w	(v_zone).w,d0
 		lsl.b	#6,d0
-		lsr.w	#4,d0
+		lsr.w	#5,d0
 		lea	(ObjPos_Index).l,a0
 		movea.l	a0,a1
 		adda.w	(a0,d0.w),a0
@@ -20888,8 +20893,7 @@ loc_12460:				; XREF: Obj63_Main
 		bne.w	DeleteObject
 		add.w	d0,d0
 		andi.w	#$1E,d0
-		addi.w	#$70,d0
-		lea	(ObjPos_Index).l,a2
+		lea	(LZPlatPos_Index).l,a2
 		adda.w	(a2,d0.w),a2
 		move.w	(a2)+,d1
 		movea.l	a0,a1
@@ -26672,50 +26676,6 @@ loc_13014:				; CODE XREF: FindWall2+74j
 		not.w	d1
 		rts
 ; End of function FindWall2
-
-;----------------------------------------------------
-; leftover function from early Sonic 1/2 alpha
-;----------------------------------------------------
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-FloorLog_Unk:				; CODE XREF: ROM:00003D4Cp
-		rts
-; End of function FloorLog_Unk
-
-; ---------------------------------------------------------------------------
-		lea	(ColArray1_GHZ).l,a1
-		tst.b	(v_zone).w
-		beq.s	loc_13038
-		lea	(ColArray1).l,a1
-
-loc_13038:				; CODE XREF: ROM:00013030j
-		lea	(ColArray1).l,a2
-		move.w	#$7FF,d1
-
-loc_13042:				; CODE XREF: ROM:00013044j
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_13042
-		lea	(ColArray2).l,a2
-		move.w	#$7FF,d1
-
-loc_13052:				; CODE XREF: ROM:00013054j
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_13052
-		lea	(AngleMap_GHZ).l,a1
-		tst.b	(v_zone).w
-		beq.s	loc_1306A
-		lea	(AngleMap).l,a1
-
-loc_1306A:				; CODE XREF: ROM:00013062j
-		lea	(AngleMap).l,a2
-		move.w	#$7F,d1	
-
-loc_13074:				; CODE XREF: ROM:00013076j
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_13074
-		rts
 
 ; =============== S U B	R O U T	I N E =======================================
 
@@ -36433,12 +36393,8 @@ j_ModifySpriteAttr_2P_1:		; CODE XREF: Debug_ShowItem+1Ap
                 include "_inc\LevelHeaders.asm"
                 include "_inc\Pattern Load Cues.asm"
 
-; why the FUCK does this disasm use spaces instead of tabs ~ MDT
-AngleMap_GHZ:	incbin "collide\S1 Angle Map.bin"
-                even
+; why the FUCK does this disasm use spaces instead of tabs ~ MDT-+
 AngleMap:	incbin "collide\Angle Map.bin"
-                even
-ColArray1_GHZ:	incbin "collide\S1 Collision Array.bin"
                 even
 ColArray1:	incbin "collide\Collision Array (Normal).bin"
                 even
@@ -36492,47 +36448,47 @@ Art_GhzFlower2:	incbin	"artunc\GHZ Flower Small.bin"
 
 LevelLayout_Index:
                 ; GHZ
-        	dc.w Level_GHZ1-LevelLayout_Index,Level_GHZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 0
-		dc.w Level_GHZ2-LevelLayout_Index,Level_GHZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 3
-		dc.w Level_GHZ3-LevelLayout_Index,Level_GHZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 6
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
+        	dc.w Level_GHZ1-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
+		dc.w Level_GHZ2-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
+		dc.w Level_GHZ3-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
                 ; LZ
-		dc.w Level_LZ1-LevelLayout_Index,Level_LZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 12
-		dc.w Level_LZ2-LevelLayout_Index,Level_LZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 15
-		dc.w Level_LZ3-LevelLayout_Index,Level_LZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 18
-		dc.w Level_LZ4-LevelLayout_Index,Level_LZBg-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
+		dc.w Level_LZ1-LevelLayout_Index,Level_LZBg-LevelLayout_Index
+		dc.w Level_LZ2-LevelLayout_Index,Level_LZBg-LevelLayout_Index
+		dc.w Level_LZ3-LevelLayout_Index,Level_LZBg-LevelLayout_Index
+		dc.w Level_LZ4-LevelLayout_Index,Level_LZBg-LevelLayout_Index
                 ; MZ
-		dc.w Level_MZ1-LevelLayout_Index,Level_MZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 12
-		dc.w Level_MZ2-LevelLayout_Index,Level_MZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 15
-		dc.w Level_MZ3-LevelLayout_Index,Level_MZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 18
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
+		dc.w Level_MZ1-LevelLayout_Index,Level_MZBg-LevelLayout_Index
+		dc.w Level_MZ2-LevelLayout_Index,Level_MZBg-LevelLayout_Index
+		dc.w Level_MZ3-LevelLayout_Index,Level_MZBg-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
                 ; SLZ
-		dc.w Level_SLZ1-LevelLayout_Index,Level_SLZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 36
-		dc.w Level_SLZ2-LevelLayout_Index,Level_SLZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 39
-		dc.w Level_SLZ3-LevelLayout_Index,Level_SLZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 42
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
+		dc.w Level_SLZ1-LevelLayout_Index,Level_SLZBg-LevelLayout_Index
+		dc.w Level_SLZ2-LevelLayout_Index,Level_SLZBg-LevelLayout_Index
+		dc.w Level_SLZ3-LevelLayout_Index,Level_SLZBg-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
                 ; SYZ
-		dc.w Level_SYZ1-LevelLayout_Index,Level_SYZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 48
-		dc.w Level_SYZ2-LevelLayout_Index,Level_SYZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 51
-		dc.w Level_SYZ3-LevelLayout_Index,Level_SYZBg-LevelLayout_Index,Level_Null-LevelLayout_Index; 54
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
+		dc.w Level_SYZ1-LevelLayout_Index,Level_SYZBg-LevelLayout_Index
+		dc.w Level_SYZ2-LevelLayout_Index,Level_SYZBg-LevelLayout_Index
+		dc.w Level_SYZ3-LevelLayout_Index,Level_SYZBg-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
                 ; SBZ
-		dc.w Level_SBZ1-LevelLayout_Index,Level_SBZ1Bg-LevelLayout_Index,Level_Null-LevelLayout_Index; 60
-		dc.w Level_SBZ2-LevelLayout_Index,Level_SBZ2Bg-LevelLayout_Index,Level_Null-LevelLayout_Index; 63
-		dc.w Level_SBZ2-LevelLayout_Index,Level_SBZ2Bg-LevelLayout_Index,Level_Null-LevelLayout_Index; 66
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
+		dc.w Level_SBZ1-LevelLayout_Index,Level_SBZ1Bg-LevelLayout_Index
+		dc.w Level_SBZ2-LevelLayout_Index,Level_SBZ2Bg-LevelLayout_Index
+		dc.w Level_SBZ2-LevelLayout_Index,Level_SBZ2Bg-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
                 ; Ending
-		dc.w Level_Ending-LevelLayout_Index,Level_GHZBg-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
-		dc.w Level_Ending-LevelLayout_Index,Level_GHZBg-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index, Level_Null-LevelLayout_Index; 9
+		dc.w Level_Ending-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
+		dc.w Level_Ending-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
 Level_GHZ1:	incbin "levels\ghz1.bin"
                 even
 Level_GHZ2:	incbin "levels\ghz2.bin"
                 even
 Level_GHZ3:	incbin "levels\ghz3.bin"
                 even
-Level_GHZBg:incbin "levels\ghzbg.bin"
+Level_GHZBg:	incbin "levels\ghzbg.bin"
                 even
 Level_LZ1:	incbin "levels\lz1.bin"
                 even
@@ -36584,49 +36540,51 @@ Art_BigRing:	incbin "artunc\Giant Ring.bin"
 
 ObjPos_Index:
                 ; GHZ
-        dc.w ObjPos_GHZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_GHZ2-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_GHZ3-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_GHZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
+        	dc.w ObjPos_GHZ1-ObjPos_Index
+		dc.w ObjPos_GHZ2-ObjPos_Index
+		dc.w ObjPos_GHZ3-ObjPos_Index
+		dc.w ObjPos_GHZ1-ObjPos_Index
                 ; LZ
-		dc.w ObjPos_LZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_LZ2-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_LZ3-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SBZ3-ObjPos_Index,ObjPos_Null-ObjPos_Index
+		dc.w ObjPos_LZ1-ObjPos_Index
+		dc.w ObjPos_LZ2-ObjPos_Index
+		dc.w ObjPos_LZ3-ObjPos_Index
+		dc.w ObjPos_SBZ3-ObjPos_Index
 		; MZ
-		dc.w ObjPos_MZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_MZ2-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_MZ3-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_MZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
+		dc.w ObjPos_MZ1-ObjPos_Index
+		dc.w ObjPos_MZ2-ObjPos_Index
+		dc.w ObjPos_MZ3-ObjPos_Index
+		dc.w ObjPos_MZ1-ObjPos_Index
 		; SLZ
-		dc.w ObjPos_SLZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SLZ2-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SLZ3-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SLZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
+		dc.w ObjPos_SLZ1-ObjPos_Index
+		dc.w ObjPos_SLZ2-ObjPos_Index
+		dc.w ObjPos_SLZ3-ObjPos_Index
+		dc.w ObjPos_SLZ1-ObjPos_Index
 		; SYZ
-		dc.w ObjPos_SYZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SYZ2-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SYZ3-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SYZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
+		dc.w ObjPos_SYZ1-ObjPos_Index
+		dc.w ObjPos_SYZ2-ObjPos_Index
+		dc.w ObjPos_SYZ3-ObjPos_Index
+		dc.w ObjPos_SYZ1-ObjPos_Index
 		; SBZ
-		dc.w ObjPos_SBZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SBZ2-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SBZ3-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_SBZ1-ObjPos_Index,ObjPos_Null-ObjPos_Index
+		dc.w ObjPos_SBZ1-ObjPos_Index
+		dc.w ObjPos_SBZ2-ObjPos_Index
+		dc.w ObjPos_SBZ3-ObjPos_Index
+		dc.w ObjPos_SBZ1-ObjPos_Index
 		; Ending
-		dc.w ObjPos_S1Ending-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_S1Ending-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_S1Ending-ObjPos_Index,ObjPos_Null-ObjPos_Index
-		dc.w ObjPos_S1Ending-ObjPos_Index,ObjPos_Null-ObjPos_Index
+		dc.w ObjPos_S1Ending-ObjPos_Index
+		dc.w ObjPos_S1Ending-ObjPos_Index
+		dc.w ObjPos_S1Ending-ObjPos_Index
+		dc.w ObjPos_S1Ending-ObjPos_Index
+
+LZPlatPos_Index
 		; Extra Object Data (Leftover)
-		dc.w ObjPos_S1LZ1pf1-ObjPos_Index,ObjPos_S1LZ1pf2-ObjPos_Index
-		dc.w ObjPos_S1LZ2pf1-ObjPos_Index,ObjPos_S1LZ2pf2-ObjPos_Index
-		dc.w ObjPos_S1LZ3pf1-ObjPos_Index,ObjPos_S1LZ3pf2-ObjPos_Index
-		dc.w ObjPos_S1LZ1pf1-ObjPos_Index,ObjPos_S1LZ1pf2-ObjPos_Index
-		dc.w ObjPos_S1SBZ1pf1-ObjPos_Index,ObjPos_S1SBZ1pf2-ObjPos_Index
-		dc.w ObjPos_S1SBZ1pf3-ObjPos_Index,ObjPos_S1SBZ1pf4-ObjPos_Index
-		dc.w ObjPos_S1SBZ1pf5-ObjPos_Index,ObjPos_S1SBZ1pf6-ObjPos_Index
-		dc.w ObjPos_S1SBZ1pf1-ObjPos_Index,ObjPos_S1SBZ1pf2-ObjPos_Index
+		dc.w ObjPos_S1LZ1pf1-LZPlatPos_Index,ObjPos_S1LZ1pf2-LZPlatPos_Index
+		dc.w ObjPos_S1LZ2pf1-LZPlatPos_Index,ObjPos_S1LZ2pf2-LZPlatPos_Index
+		dc.w ObjPos_S1LZ3pf1-LZPlatPos_Index,ObjPos_S1LZ3pf2-LZPlatPos_Index
+		dc.w ObjPos_S1LZ1pf1-LZPlatPos_Index,ObjPos_S1LZ1pf2-LZPlatPos_Index
+		dc.w ObjPos_S1SBZ1pf1-LZPlatPos_Index,ObjPos_S1SBZ1pf2-LZPlatPos_Index
+		dc.w ObjPos_S1SBZ1pf3-LZPlatPos_Index,ObjPos_S1SBZ1pf4-LZPlatPos_Index
+		dc.w ObjPos_S1SBZ1pf5-LZPlatPos_Index,ObjPos_S1SBZ1pf6-LZPlatPos_Index
+		dc.w ObjPos_S1SBZ1pf1-LZPlatPos_Index,ObjPos_S1SBZ1pf2-LZPlatPos_Index
 		dc.w $FFFF, 0, 0
 ObjPos_GHZ1:	incbin "objpos\ghz1.bin"
                 even
