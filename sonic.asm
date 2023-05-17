@@ -1,3 +1,6 @@
+; 17/5/23_A
+; Level format converted to Sonic 2
+
 ; 15/5/23_A
 ; Removed FloorLog_Unk (completely useless)
 ; Optimized ObjPos_Index table
@@ -7226,62 +7229,16 @@ locret_7382:				; CODE XREF: MainLevelLoadBlock+10Cj
 
 
 LevelLayoutLoad:			; CODE XREF: MainLevelLoadBlock:loc_7348p
-		lea	(v_lvllayout).w,a3
-		move.w	#$3FF,d1
-		moveq	#0,d0
-
-loc_738E:				; CODE XREF: LevelLayoutLoad+Cj
-		move.l	d0,(a3)+
-		dbf	d1,loc_738E
-		lea	(v_lvllayout).w,a3
-		moveq	#0,d1
-		bsr.w	LevelLayoutLoad2
-		lea	(v_lvllayout+$80).w,a3
-		moveq	#2,d1
-; End of function LevelLayoutLoad
-
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-LevelLayoutLoad2:			; CODE XREF: LevelLayoutLoad+16p
 		moveq	#0,d0
 		move.w	(v_zone).w,d0
-		lsl.b	#6,d0
-		lsr.w	#4,d0
-		add.w	d1,d0				; DON'T DELETE THIS! It loads the background!
-		lea	(LevelLayout_Index).l,a1
-		move.w	(a1,d0.w),d0
-		lea	(a1,d0.l),a1
-
-		moveq	#0,d1
-		move.w	d1,d2
-		move.b	(a1)+,d1
-		move.b	(a1)+,d2
-		move.l	d1,d5
-		addq.l	#1,d5
-		moveq	#0,d3
-		move.w	#$80,d3
-		divu.w	d5,d3
-		subq.w	#1,d3
-
-loc_73DE:				; CODE XREF: LevelLayoutLoad2+56j
-		movea.l	a3,a0
-		move.w	d3,d4
-
-loc_73E2:				; CODE XREF: LevelLayoutLoad2+4Aj
-		move.l	a1,-(sp)
-		move.w	d1,d0
-
-loc_73E6:				; CODE XREF: LevelLayoutLoad2+44j
-		move.b	(a1)+,(a0)+
-		dbf	d0,loc_73E6
-		movea.l	(sp)+,a1
-		dbf	d4,loc_73E2
-		lea	(a1,d5.w),a1
-		lea	$100(a3),a3
-		dbf	d2,loc_73DE
-		rts
+		ror.b	#2,d0
+		lsr.w	#5,d0
+		lea	(LevelLayout_Index).l,a0
+		move.w	(a0,d0.w),d0
+		lea	(a0,d0.l),a0
+		lea	(v_lvllayout).w,a1
+		jmp	(KosDec).l
+; End of function LevelLayoutLoad
 
 
 ; =============== S U B	R O U T	I N E =======================================
@@ -36448,47 +36405,45 @@ Art_GhzFlower2:	incbin	"artunc\GHZ Flower Small.bin"
 
 LevelLayout_Index:
                 ; GHZ
-        	dc.w Level_GHZ1-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
-		dc.w Level_GHZ2-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
-		dc.w Level_GHZ3-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
+        	dc.w Level_GHZ1-LevelLayout_Index
+		dc.w Level_GHZ2-LevelLayout_Index
+		dc.w Level_GHZ3-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index
                 ; LZ
-		dc.w Level_LZ1-LevelLayout_Index,Level_LZBg-LevelLayout_Index
-		dc.w Level_LZ2-LevelLayout_Index,Level_LZBg-LevelLayout_Index
-		dc.w Level_LZ3-LevelLayout_Index,Level_LZBg-LevelLayout_Index
-		dc.w Level_LZ4-LevelLayout_Index,Level_LZBg-LevelLayout_Index
+		dc.w Level_LZ1-LevelLayout_Index
+		dc.w Level_LZ2-LevelLayout_Index
+		dc.w Level_LZ3-LevelLayout_Index
+		dc.w Level_LZ4-LevelLayout_Index
                 ; MZ
-		dc.w Level_MZ1-LevelLayout_Index,Level_MZBg-LevelLayout_Index
-		dc.w Level_MZ2-LevelLayout_Index,Level_MZBg-LevelLayout_Index
-		dc.w Level_MZ3-LevelLayout_Index,Level_MZBg-LevelLayout_Index
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
+		dc.w Level_MZ1-LevelLayout_Index
+		dc.w Level_MZ2-LevelLayout_Index
+		dc.w Level_MZ3-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index
                 ; SLZ
-		dc.w Level_SLZ1-LevelLayout_Index,Level_SLZBg-LevelLayout_Index
-		dc.w Level_SLZ2-LevelLayout_Index,Level_SLZBg-LevelLayout_Index
-		dc.w Level_SLZ3-LevelLayout_Index,Level_SLZBg-LevelLayout_Index
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
+		dc.w Level_SLZ1-LevelLayout_Index
+		dc.w Level_SLZ2-LevelLayout_Index
+		dc.w Level_SLZ3-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index
                 ; SYZ
-		dc.w Level_SYZ1-LevelLayout_Index,Level_SYZBg-LevelLayout_Index
-		dc.w Level_SYZ2-LevelLayout_Index,Level_SYZBg-LevelLayout_Index
-		dc.w Level_SYZ3-LevelLayout_Index,Level_SYZBg-LevelLayout_Index
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
+		dc.w Level_SYZ1-LevelLayout_Index
+		dc.w Level_SYZ2-LevelLayout_Index
+		dc.w Level_SYZ3-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index
                 ; SBZ
-		dc.w Level_SBZ1-LevelLayout_Index,Level_SBZ1Bg-LevelLayout_Index
-		dc.w Level_SBZ2-LevelLayout_Index,Level_SBZ2Bg-LevelLayout_Index
-		dc.w Level_SBZ2-LevelLayout_Index,Level_SBZ2Bg-LevelLayout_Index
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
+		dc.w Level_SBZ1-LevelLayout_Index
+		dc.w Level_SBZ2-LevelLayout_Index
+		dc.w Level_SBZ2-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index
                 ; Ending
-		dc.w Level_Ending-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
-		dc.w Level_Ending-LevelLayout_Index,Level_GHZBg-LevelLayout_Index
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
-		dc.w Level_Null-LevelLayout_Index,Level_Null-LevelLayout_Index
+		dc.w Level_Ending-LevelLayout_Index
+		dc.w Level_Ending-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index
+		dc.w Level_Null-LevelLayout_Index
 Level_GHZ1:	incbin "levels\ghz1.bin"
                 even
 Level_GHZ2:	incbin "levels\ghz2.bin"
                 even
 Level_GHZ3:	incbin "levels\ghz3.bin"
-                even
-Level_GHZBg:	incbin "levels\ghzbg.bin"
                 even
 Level_LZ1:	incbin "levels\lz1.bin"
                 even
@@ -36498,39 +36453,27 @@ Level_LZ3:	incbin "levels\lz3.bin"
                 even
 Level_LZ4:	incbin "levels\lz4.bin"
                 even
-Level_LZBg:	incbin "levels\LZbg.bin"
+Level_MZ1:	incbin "levels\mz1.bin"
                 even
-Level_MZ1:	incbin "levels\MZ1.bin"
+Level_MZ2:	incbin "levels\mz2.bin"
                 even
-Level_MZ2:	incbin "levels\MZ2.bin"
+Level_MZ3:	incbin "levels\mz3.bin"
                 even
-Level_MZ3:	incbin "levels\MZ3.bin"
+Level_SLZ1:	incbin "levels\slz1.bin"
                 even
-Level_MZBg:	incbin "levels\MZbg.bin"
+Level_SLZ2:	incbin "levels\slz2.bin"
                 even
-Level_SLZ1:	incbin "levels\SLZ1.bin"
+Level_SLZ3:	incbin "levels\slz3.bin"
                 even
-Level_SLZ2:	incbin "levels\SLZ2.bin"
+Level_SYZ1:	incbin "levels\syz1.bin"
                 even
-Level_SLZ3:	incbin "levels\SLZ3.bin"
+Level_SYZ2:	incbin "levels\syz2.bin"
                 even
-Level_SLZBg:	incbin "levels\SLZbg.bin"
+Level_SYZ3:	incbin "levels\syz1.bin"
                 even
-Level_SYZ1:	incbin "levels\SYZ1.bin"
+Level_SBZ1:	incbin "levels\sbz1.bin"
                 even
-Level_SYZ2:	incbin "levels\SYZ2.bin"
-                even
-Level_SYZ3:	incbin "levels\SYZ1.bin"
-                even
-Level_SYZBg:	incbin "levels\SYZbg.bin"
-                even
-Level_SBZ1:	incbin "levels\SBZ1.bin"
-                even
-Level_SBZ2:	incbin "levels\SBZ2.bin"
-                even
-Level_SBZ1Bg:	incbin "levels\SBZ1bg.bin"
-                even
-Level_SBZ2Bg:	incbin "levels\SBZ2bg.bin"
+Level_SBZ2:	incbin "levels\sbz2.bin"
                 even
 Level_Ending:	incbin "levels\ending.bin"
 		even
