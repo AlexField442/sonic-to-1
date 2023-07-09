@@ -1,3 +1,7 @@
+; 6/4/23_A
+; Added the remaining leftover Sonic 1 objects (except Obj4A) to the object list
+; Restored some SBZ objects
+
 ; 17/5/23_A
 ; Level format converted to Sonic 2
 
@@ -1716,19 +1720,6 @@ locret_1A80:
 ; ---------------------------------------------------------------------------
 
 PalCycle_SBZ:				; DATA XREF: ROM:00001E6Ao
-		lea	(Pal_SBZCyc1).l,a0
-		subq.w	#1,($FFFFF634).w
-		bpl.s	locret_1FB8
-		move.w	#0,($FFFFF634).w
-		move.w	($FFFFF632).w,d0
-		addq.w	#1,($FFFFF632).w
-		andi.w	#$F,d0
-		move.b	Pal_SBZCyc2(pc,d0.w),($FFFFF635).w
-		lsl.w	#3,d0
-		move.l	(a0,d0.w),($FFFFFB26).w
-		move.l	4(a0,d0.w),($FFFFFB3C).w
-
-locret_1FB8:				; CODE XREF: ROM:00001F90j
 		rts
 ; ---------------------------------------------------------------------------
 Pal_SBZCyc2:	dc.w  $B0B, $B0A, $80A,	$B0B, $B0B, $D0F, $D0B,	$B0B; 0
@@ -3268,120 +3259,6 @@ loc_382E:				; CODE XREF: sub_381C+6j
 ; ---------------------------------------------------------------------------
 LevelSelect_Text:incbin "misc\Level Select Text.bin"
                 even
-; ---------------------------------------------------------------------------
-
-UnknownSub_1:
-		lea	($FFFF0000).l,a1
-		move.w	#$2EB,d2
-
-loc_3A3A:				; CODE XREF: ROM:00003A4Cj
-		move.w	(a1),d0
-		move.w	d0,d1
-		andi.w	#$F800,d1
-		andi.w	#$7FF,d0
-		lsr.w	#1,d0
-		or.w	d0,d1
-		move.w	d1,(a1)+
-		dbf	d2,loc_3A3A
-		rts
-; ---------------------------------------------------------------------------
-
-UnknownSub_2:
-		lea	($FE0000).l,a1
-		lea	($FE0080).l,a2
-		lea	($FFFF0000).l,a3
-		move.w	#$3F,d1
-
-loc_3A68:				; CODE XREF: ROM:00003A70j
-		bsr.w	UnknownSub_4
-		bsr.w	UnknownSub_4
-		dbf	d1,loc_3A68
-		lea	($FE0000).l,a1
-		lea	($FF0000).l,a2
-		move.w	#$3F,d1	
-
-loc_3A84:				; CODE XREF: ROM:00003A88j
-		move.w	#0,(a2)+
-		dbf	d1,loc_3A84
-		move.w	#$3FBF,d1
-
-loc_3A90:				; CODE XREF: ROM:00003A92j
-		move.w	(a1)+,(a2)+
-		dbf	d1,loc_3A90
-		rts
-; ---------------------------------------------------------------------------
-
-UnknownSub_3:
-		lea	($FE0000).l,a1
-		lea	($FFFF0000).l,a3
-		moveq	#$1F,d0
-
-loc_3AA6:				; CODE XREF: ROM:00003AA8j
-		move.l	(a1)+,(a3)+
-		dbf	d0,loc_3AA6
-		moveq	#0,d7
-		lea	($FE0000).l,a1
-		move.w	#$FF,d5
-
-loc_3AB8:				; CODE XREF: ROM:00003AD8j
-					; ROM:00003AF4j
-		lea	($FFFF0000).l,a3
-		move.w	d7,d6
-
-loc_3AC0:				; CODE XREF: ROM:00003AE6j
-		movem.l	a1-a3,-(sp)
-		move.w	#$3F,d0	
-
-loc_3AC8:				; CODE XREF: ROM:00003ACCj
-		cmpm.w	(a1)+,(a3)+
-		bne.s	loc_3ADE
-		dbf	d0,loc_3AC8
-		movem.l	(sp)+,a1-a3
-		adda.w	#$80,a1	
-		dbf	d5,loc_3AB8
-		bra.s	loc_3AF8
-; ---------------------------------------------------------------------------
-
-loc_3ADE:				; CODE XREF: ROM:00003ACAj
-		movem.l	(sp)+,a1-a3
-		adda.w	#$80,a3	
-		dbf	d6,loc_3AC0
-		moveq	#$1F,d0
-
-loc_3AEC:				; CODE XREF: ROM:00003AEEj
-		move.l	(a1)+,(a3)+
-		dbf	d0,loc_3AEC
-		addq.l	#1,d7
-		dbf	d5,loc_3AB8
-
-loc_3AF8:				; CODE XREF: ROM:00003ADCj
-					; ROM:loc_3AF8j
-		bra.s	loc_3AF8
-
-; =============== S U B	R O U T	I N E =======================================
-
-
-UnknownSub_4:				; CODE XREF: ROM:loc_3A68p
-					; ROM:00003A6Cp
-		moveq	#7,d0
-
-loc_3AFC:				; CODE XREF: UnknownSub_4+12j
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a1)+
-		move.l	(a3)+,(a2)+
-		move.l	(a3)+,(a2)+
-		move.l	(a3)+,(a2)+
-		move.l	(a3)+,(a2)+
-		dbf	d0,loc_3AFC
-		adda.w	#$80,a1	
-		adda.w	#$80,a2	
-		rts
-; End of function UnknownSub_4
-
-; ---------------------------------------------------------------------------
-		nop
 ; ---------------------------------------------------------------------------
 MusicList:	dc.b $81,$82,$83,$84,$85,$86,$8D,  0; 0	; DATA XREF: ROM:loc_3CE6t
 ; ---------------------------------------------------------------------------
@@ -12487,6 +12364,16 @@ Map_Obj26:	dc.w word_B2B0-Map_Obj26 ; DATA	XREF: ROM:0000AE80o
 		dc.w word_B34A-Map_Obj26
 		dc.w word_B35C-Map_Obj26
 		dc.w word_B36E-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
+		dc.w word_B2B0-Map_Obj26
 word_B2B0:	dc.w 1			; DATA XREF: ROM:Map_Obj26o
 		dc.w $EF0F,    0,    0,$FFF0; 0
 word_B2BA:	dc.w 2			; DATA XREF: ROM:0000B29Ao
@@ -14873,9 +14760,9 @@ Obj_Index:	dc.l Obj01
                 dc.l NullObject
                 dc.l Obj1C
 		dc.l NullObject
-                dc.l NullObject
+                dc.l S1Obj_1E
                 dc.l Obj1F
-                dc.l NullObject
+                dc.l S1Obj20
 		dc.l Obj21
                 dc.l Obj22
                 dc.l Obj23
@@ -14914,7 +14801,7 @@ Obj_Index:	dc.l Obj01
                 dc.l Obj44
 		dc.l NullObject
                 dc.l NullObject
-                dc.l NullObject
+                dc.l S1Obj47
                 dc.l Obj48
 		dc.l Obj49
                 dc.l Obj4A
@@ -14926,7 +14813,7 @@ Obj_Index:	dc.l Obj01
                 dc.l Obj50
 		dc.l Obj51
                 dc.l Obj52
-                dc.l NullObject
+                dc.l S1Obj_53
                 dc.l NullObject
 		dc.l NullObject		; crashes game, need to replace with Bat badnik
                 dc.l Obj56
@@ -14945,6 +14832,10 @@ Obj_Index:	dc.l Obj01
                 dc.l Obj63
                 dc.l S1Obj64
 		dc.l Obj65
+                dc.l Obj66
+                dc.l Obj67
+                dc.l NullObject
+		dc.l Obj69
                 dc.l NullObject
                 dc.l NullObject
                 dc.l NullObject
@@ -14953,11 +14844,7 @@ Obj_Index:	dc.l Obj01
                 dc.l NullObject
                 dc.l NullObject
 		dc.l NullObject
-                dc.l NullObject
-                dc.l NullObject
-                dc.l NullObject
-		dc.l NullObject
-                dc.l NullObject
+                dc.l Obj72
                 dc.l NullObject
                 dc.l NullObject
 		dc.l NullObject
@@ -25642,68 +25529,6 @@ loc_124B2:				; CODE XREF: ROM:00012466j
 		jmp	DeleteObject
 ; ---------------------------------------------------------------------------
 ;----------------------------------------------------
-; Sonic	1 Object 4A - special stage entry from
-;		      Sonic 1 beta
-;----------------------------------------------------
-
-S1Obj4A:
-		moveq	#0,d0
-		move.b	$24(a0),d0
-		move.w	S1Obj4A_Index(pc,d0.w),d1
-		jmp	S1Obj4A_Index(pc,d1.w)
-; ---------------------------------------------------------------------------
-S1Obj4A_Index:	dc.w S1Obj4A_Init-S1Obj4A_Index	; DATA XREF: ROM:S1Obj4A_Indexo
-					; ROM:000124C8o ...
-		dc.w S1Obj4A_RmvSonic-S1Obj4A_Index
-		dc.w S1Obj4A_LoadSonic-S1Obj4A_Index
-; ---------------------------------------------------------------------------
-
-S1Obj4A_Init:				; DATA XREF: ROM:S1Obj4A_Indexo
-		tst.l	($FFFFF680).w
-		beq.s	loc_124D4
-		rts
-; ---------------------------------------------------------------------------
-
-loc_124D4:				; CODE XREF: ROM:000124D0j
-		addq.b	#2,$24(a0)
-		move.l	#Map_S1Obj4A,4(a0)
-		move.b	#4,1(a0)
-		move.b	#1,$18(a0)
-		move.b	#$38,$19(a0) ; "8"
-		move.w	#$541,2(a0)
-		bsr.w	ModifySpriteAttr_2P
-		move.w	#$78,$30(a0) ; "x"
-
-S1Obj4A_RmvSonic:			; DATA XREF: ROM:000124C8o
-		move.w	(v_objspace+8).w,8(a0)
-		move.w	(v_objspace+$C).w,$C(a0)
-		move.b	(v_objspace+$22).w,$22(a0)
-		lea	(Ani_S1Obj4A).l,a1
-		jsr	AnimateSprite
-		cmpi.b	#2,$1A(a0)
-		bne.s	loc_1253E
-		tst.b	(v_objspace).w
-		beq.s	loc_1253E
-		move.b	#0,(v_objspace).w
-		move.w	#$A8,d0	; "�"
-		jsr	(PlaySound_Special).l
-
-loc_1253E:				; CODE XREF: ROM:00012526j
-					; ROM:0001252Cj
-		jmp	DisplaySprite
-; ---------------------------------------------------------------------------
-
-S1Obj4A_LoadSonic:			; DATA XREF: ROM:000124CAo
-		subq.w	#1,$30(a0)
-		bne.s	locret_12556
-		move.b	#1,(v_objspace).w
-		jmp	DeleteObject
-; ---------------------------------------------------------------------------
-
-locret_12556:				; CODE XREF: ROM:00012548j
-		rts
-; ---------------------------------------------------------------------------
-;----------------------------------------------------
 ; Object 08 - water splash
 ;----------------------------------------------------
 
@@ -27104,6 +26929,755 @@ locret_134C4:				; CODE XREF: ROM:000134BEj
 		rts
 ; ---------------------------------------------------------------------------
 		nop
+
+; ---------------------------------------------------------------------------
+; Object 66 - rotating disc junction that grabs Sonic (SBZ)
+; ---------------------------------------------------------------------------
+
+Obj66:
+		moveq	#0,d0
+		move.b	obRoutine(a0),d0
+		move.w	Jun_Index(pc,d0.w),d1
+		jmp	Jun_Index(pc,d1.w)
+; ===========================================================================
+Jun_Index:	dc.w Jun_Main-Jun_Index
+		dc.w Jun_Action-Jun_Index
+		dc.w Jun_Display-Jun_Index
+		dc.w Jun_Release-Jun_Index
+
+jun_frame = $34		; current frame
+jun_reverse = $36		; flag set when switch is pressed
+jun_switch = $38		; which switch will reverse the disc
+; ===========================================================================
+
+Jun_Main:	; Routine 0
+		addq.b	#2,obRoutine(a0)
+		move.w	#1,d1
+		movea.l	a0,a1
+		bra.s	@makeitem
+; ===========================================================================
+
+@repeat:
+		bsr.w	S1SingleObjectLoad2
+		bne.s	@fail
+		move.b	#$66,0(a1)
+		addq.b	#4,obRoutine(a1) ; goto Jun_Display next
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		move.b	#3,obPriority(a1)
+		move.b	#$10,obFrame(a1) ; use large circular sprite
+
+@makeitem:
+		move.l	#Map_Jun,obMap(a1)
+		move.w	#$4348,obGfx(a1)
+		ori.b	#4,obRender(a1)
+		move.b	#$38,obActWid(a1)
+
+@fail:
+		dbf	d1,@repeat
+
+		move.b	#$30,obActWid(a0)
+		move.b	#4,obPriority(a0)
+		move.w	#$3C,$30(a0)
+		move.b	#1,jun_frame(a0)
+		move.b	obSubtype(a0),jun_switch(a0)
+
+Jun_Action:	; Routine 2
+		bsr.w	Jun_ChkSwitch
+		tst.b	obRender(a0)
+		bpl.w	Jun_Display
+		move.w	#$30,d1
+		move.w	d1,d2
+		move.w	d2,d3
+		addq.w	#1,d3
+		move.w	obX(a0),d4
+		bsr.w	SolidObject
+		btst	#5,obStatus(a0)	; is Sonic pushing the disc?
+		beq.w	Jun_Display	; if not, branch
+
+		lea	(v_objspace).w,a1
+		moveq	#$E,d1
+		move.w	obX(a1),d0
+		cmp.w	obX(a0),d0	; is Sonic to the left of the disc?
+		bcs.s	@isleft		; if yes, branch
+		moveq	#7,d1		
+
+@isleft:
+		cmp.b	obFrame(a0),d1	; is the gap next to Sonic?
+		bne.s	Jun_Display	; if not, branch
+
+		move.b	d1,$32(a0)
+		addq.b	#4,obRoutine(a0) ; goto Jun_Release next
+		move.b	#1,($FFFFF7C8).w ; lock controls
+		move.b	#2,obAnim(a1) ; make Sonic use "rolling" animation
+		move.w	#$800,obInertia(a1)
+		move.w	#0,obVelX(a1)
+		move.w	#0,obVelY(a1)
+		bclr	#5,obStatus(a0)
+		bclr	#5,obStatus(a1)
+		bset	#1,obStatus(a1)
+		move.w	obX(a1),d2
+		move.w	obY(a1),d3
+		bsr.w	Jun_ChgPos
+		add.w	d2,obX(a1)
+		add.w	d3,obY(a1)
+		asr	obX(a1)
+		asr	obY(a1)
+
+Jun_Display:	; Routine 4
+		bra.w	MarkObjGone
+; ===========================================================================
+
+Jun_Release:	; Routine 6
+		move.b	obFrame(a0),d0
+		cmpi.b	#4,d0		; is gap pointing down?
+		beq.s	@release	; if yes, branch
+		cmpi.b	#7,d0		; is gap pointing right?
+		bne.s	@dontrelease	; if not, branch
+
+@release:
+		cmp.b	$32(a0),d0
+		beq.s	@dontrelease
+		lea	(v_objspace).w,a1
+		move.w	#0,obVelX(a1)
+		move.w	#$800,obVelY(a1)
+		cmpi.b	#4,d0
+		beq.s	@isdown
+		move.w	#$800,obVelX(a1)
+		move.w	#$800,obVelY(a1)
+
+@isdown:
+		clr.b	($FFFFF7C8).w	; unlock controls
+		subq.b	#4,obRoutine(a0)
+
+@dontrelease:
+		bsr.s	Jun_ChkSwitch
+		bsr.s	Jun_ChgPos
+		bra.w	MarkObjGone
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Jun_ChkSwitch:
+		lea	($FFFFF7E0).w,a2
+		moveq	#0,d0
+		move.b	jun_switch(a0),d0
+		btst	#0,(a2,d0.w)	; is switch pressed?
+		beq.s	@unpressed	; if not, branch
+
+		tst.b	jun_reverse(a0)	; has switch previously	been pressed?
+		bne.s	@animate	; if yes, branch
+		neg.b	jun_frame(a0)
+		move.b	#1,jun_reverse(a0) ; set to "previously pressed"
+		bra.s	@animate
+; ===========================================================================
+
+@unpressed:
+		clr.b	jun_reverse(a0)	; set to "not yet pressed"
+
+@animate:
+		subq.b	#1,obTimeFrame(a0) ; decrement frame timer
+		bpl.s	@nochange	; if time remains, branch
+		move.b	#7,obTimeFrame(a0)
+		move.b	jun_frame(a0),d1
+		move.b	obFrame(a0),d0
+		add.b	d1,d0
+		andi.b	#$F,d0
+		move.b	d0,obFrame(a0)	; update frame
+
+@nochange:
+		rts	
+; End of function Jun_ChkSwitch
+
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+Jun_ChgPos:
+		lea	(v_objspace).w,a1
+		moveq	#0,d0
+		move.b	obFrame(a0),d0
+		add.w	d0,d0
+		lea	@data(pc,d0.w),a2
+		move.b	(a2)+,d0
+		ext.w	d0
+		add.w	obX(a0),d0
+		move.w	d0,obX(a1)
+		move.b	(a2)+,d0
+		ext.w	d0
+		add.w	obY(a0),d0
+		move.w	d0,obY(a1)
+		rts	
+
+
+@data:		dc.b -$20,    0, -$1E,   $E ; disc x-pos, Sonic x-pos, disc y-pos, Sonic y-pos
+		dc.b -$18,  $18,  -$E,  $1E
+		dc.b    0,  $20,   $E,  $1E
+		dc.b  $18,  $18,  $1E,   $E
+		dc.b  $20,    0,  $1E,  -$E
+		dc.b  $18, -$18,   $E, -$1E
+		dc.b    0, -$20,  -$E, -$1E
+		dc.b -$18, -$18, -$1E,  -$E
+
+Map_Jun:	include	"_maps/Rotating Junction.asm"
+
+; ---------------------------------------------------------------------------
+; Object 67 - disc that	you run	around (SBZ)
+; ---------------------------------------------------------------------------
+
+Obj67:
+		moveq	#0,d0
+		move.b	obRoutine(a0),d0
+		move.w	Disc_Index(pc,d0.w),d1
+		jmp	Disc_Index(pc,d1.w)
+; ===========================================================================
+Disc_Index:	dc.w Disc_Main-Disc_Index
+		dc.w Disc_Action-Disc_Index
+
+disc_origX = $32		; original x-axis position
+disc_origY = $30		; original y-axis position
+; ===========================================================================
+
+Disc_Main:	; Routine 0
+		addq.b	#2,obRoutine(a0)
+		move.l	#Map_Disc,obMap(a0)
+		move.w	#$C344,obGfx(a0)
+		move.b	#4,obRender(a0)
+		move.b	#4,obPriority(a0)
+		move.b	#8,obActWid(a0)
+		move.w	obX(a0),disc_origX(a0)
+		move.w	obY(a0),disc_origY(a0)
+		move.b	#$18,$34(a0)
+		move.b	#$48,$38(a0)
+		move.b	obSubtype(a0),d1 ; get object type
+		andi.b	#$F,d1		; read only the	2nd digit
+		beq.s	@typeis0	; branch if 0
+		move.b	#$10,$34(a0)
+		move.b	#$38,$38(a0)
+
+@typeis0:
+		move.b	obSubtype(a0),d1 ; get object type
+		andi.b	#$F0,d1		; read only the	1st digit
+		ext.w	d1
+		asl.w	#3,d1
+		move.w	d1,$36(a0)
+		move.b	obStatus(a0),d0
+		ror.b	#2,d0
+		andi.b	#$C0,d0
+		move.b	d0,obAngle(a0)
+
+Disc_Action:	; Routine 2
+		bsr.w	Disc_MoveSonic
+		bsr.w	Disc_MoveSpot
+		bra.w	Disc_ChkDel
+; ===========================================================================
+
+Disc_MoveSonic:
+		moveq	#0,d2
+		move.b	$38(a0),d2
+		move.w	d2,d3
+		add.w	d3,d3
+		lea	(v_objspace).w,a1
+		move.w	obX(a1),d0
+		sub.w	disc_origX(a0),d0
+		add.w	d2,d0
+		cmp.w	d3,d0
+		bcc.s	loc_155A8
+		move.w	obY(a1),d1
+		sub.w	disc_origY(a0),d1
+		add.w	d2,d1
+		cmp.w	d3,d1
+		bcc.s	loc_155A8
+		btst	#1,obStatus(a1)
+		beq.s	loc_155B8
+		clr.b	$3A(a0)
+		rts	
+; ===========================================================================
+
+loc_155A8:
+		tst.b	$3A(a0)
+		beq.s	locret_155B6
+		clr.b	$38(a1)
+		clr.b	$3A(a0)
+
+locret_155B6:
+		rts	
+; ===========================================================================
+
+loc_155B8:
+		tst.b	$3A(a0)
+		bne.s	loc_155E2
+		move.b	#1,$3A(a0)
+		btst	#2,obStatus(a1)
+		bne.s	loc_155D0
+		clr.b	obAnim(a1)
+
+loc_155D0:
+		bclr	#5,obStatus(a1)
+		move.b	#1,obNextAni(a1)
+		move.b	#1,$38(a1)
+
+loc_155E2:
+		move.w	obInertia(a1),d0
+		tst.w	$36(a0)
+		bpl.s	loc_15608
+		cmpi.w	#-$400,d0
+		ble.s	loc_155FA
+		move.w	#-$400,obInertia(a1)
+		rts	
+; ===========================================================================
+
+loc_155FA:
+		cmpi.w	#-$F00,d0
+		bge.s	locret_15606
+		move.w	#-$F00,obInertia(a1)
+
+locret_15606:
+		rts	
+; ===========================================================================
+
+loc_15608:
+		cmpi.w	#$400,d0
+		bge.s	loc_15616
+		move.w	#$400,obInertia(a1)
+		rts	
+; ===========================================================================
+
+loc_15616:
+		cmpi.w	#$F00,d0
+		ble.s	locret_15622
+		move.w	#$F00,obInertia(a1)
+
+locret_15622:
+		rts	
+; ===========================================================================
+
+Disc_MoveSpot:
+		move.w	$36(a0),d0
+		add.w	d0,obAngle(a0)
+		move.b	obAngle(a0),d0
+		jsr	(CalcSine).l
+		move.w	disc_origY(a0),d2
+		move.w	disc_origX(a0),d3
+		moveq	#0,d4
+		move.b	$34(a0),d4
+		lsl.w	#8,d4
+		move.l	d4,d5
+		muls.w	d0,d4
+		swap	d4
+		muls.w	d1,d5
+		swap	d5
+		add.w	d2,d4
+		add.w	d3,d5
+		move.w	d4,obY(a0)
+		move.w	d5,obX(a0)
+		rts	
+; ===========================================================================
+
+Disc_ChkDel:
+		move.w	disc_origX(a0),d0
+		andi.w	#$FF80,d0
+		sub.w	($FFFFF7DA).w,d0
+		cmpi.w	#$280,d0
+		bhi.s	@delete
+		jmp	(DisplaySprite).l
+
+@delete:
+		jmp	(DeleteObject).l
+; ===========================================================================
+Map_Disc:	include	"_maps/Running Disc.asm"
+
+; ---------------------------------------------------------------------------
+; Object 69 - spinning platforms and trapdoors (SBZ)
+; ---------------------------------------------------------------------------
+
+Obj69:
+		moveq	#0,d0
+		move.b	obRoutine(a0),d0
+		move.w	Spin_Index(pc,d0.w),d1
+		jmp	Spin_Index(pc,d1.w)
+; ===========================================================================
+Spin_Index:	dc.w Spin_Main-Spin_Index
+		dc.w Spin_Trapdoor-Spin_Index
+		dc.w Spin_Spinner-Spin_Index
+
+spin_timer = $30		; time counter until change
+spin_timelen = $32		; time between changes (general)
+; ===========================================================================
+
+Spin_Main:	; Routine 0
+		addq.b	#2,obRoutine(a0)
+		move.l	#Map_Trap,obMap(a0)
+		move.w	#$4492,obGfx(a0)
+		ori.b	#4,obRender(a0)
+		move.b	#$80,obActWid(a0)
+		moveq	#0,d0
+		move.b	obSubtype(a0),d0
+		andi.w	#$F,d0
+		mulu.w	#$3C,d0
+		move.w	d0,spin_timelen(a0)
+		tst.b	obSubtype(a0)	; is subtype $8x?
+		bpl.s	Spin_Trapdoor	; if not, branch
+
+		addq.b	#2,obRoutine(a0) ; goto Spin_Spinner next
+		move.l	#Map_Spin,obMap(a0)
+		move.w	#$4DF,obGfx(a0)
+		move.b	#$10,obActWid(a0)
+		move.b	#2,obAnim(a0)
+		moveq	#0,d0
+		move.b	obSubtype(a0),d0 ; get object type
+		move.w	d0,d1
+		andi.w	#$F,d0		; read only the	2nd digit
+		mulu.w	#6,d0		; multiply by 6
+		move.w	d0,spin_timer(a0)
+		move.w	d0,spin_timelen(a0) ; set time delay
+		andi.w	#$70,d1
+		addi.w	#$10,d1
+		lsl.w	#2,d1
+		subq.w	#1,d1
+		move.w	d1,$36(a0)
+		bra.s	Spin_Spinner
+; ===========================================================================
+
+Spin_Trapdoor:	; Routine 2
+		subq.w	#1,spin_timer(a0) ; decrement timer
+		bpl.s	@animate	; if time remains, branch
+
+		move.w	spin_timelen(a0),spin_timer(a0)
+		bchg	#0,obAnim(a0)
+		tst.b	obRender(a0)
+		bpl.s	@animate
+		move.w	#$BB,d0
+		jsr	(PlaySound_Special).l	; play door sound
+
+@animate:
+		lea	(Ani_Spin).l,a1
+		jsr	(AnimateSprite).l
+		tst.b	obFrame(a0)	; is frame number 0 displayed?
+		bne.s	@notsolid	; if not, branch
+		move.w	#$4B,d1
+		move.w	#$C,d2
+		move.w	d2,d3
+		addq.w	#1,d3
+		move.w	obX(a0),d4
+		bsr.w	SolidObject
+		bra.w	MarkObjGone
+; ===========================================================================
+
+@notsolid:
+		btst	#3,obStatus(a0) ; is Sonic standing on the trapdoor?
+		beq.s	@display	; if not, branch
+		lea	(v_objspace).w,a1
+		bclr	#3,obStatus(a1)
+		bclr	#3,obStatus(a0)
+		clr.b	obSolid(a0)
+
+@display:
+		bra.w	MarkObjGone
+; ===========================================================================
+
+Spin_Spinner:	; Routine 4
+		move.w	($FFFFFE04).w,d0
+		and.w	$36(a0),d0
+		bne.s	@delay
+		move.b	#1,$34(a0)
+
+@delay:
+		tst.b	$34(a0)
+		beq.s	@animate
+		subq.w	#1,spin_timer(a0)
+		bpl.s	@animate
+		move.w	spin_timelen(a0),spin_timer(a0)
+		clr.b	$34(a0)
+		bchg	#0,obAnim(a0)
+
+@animate:
+		lea	(Ani_Spin).l,a1
+		jsr	(AnimateSprite).l
+		tst.b	obFrame(a0)	; check	if frame number	0 is displayed
+		bne.s	@notsolid2	; if not, branch
+		move.w	#$1B,d1
+		move.w	#7,d2
+		move.w	d2,d3
+		addq.w	#1,d3
+		move.w	obX(a0),d4
+		bsr.w	SolidObject
+		bra.w	MarkObjGone
+; ===========================================================================
+
+@notsolid2:
+		btst	#3,obStatus(a0)
+		beq.s	@display
+		lea	(v_objspace).w,a1
+		bclr	#3,obStatus(a1)
+		bclr	#3,obStatus(a0)
+		clr.b	obSolid(a0)
+
+@display:
+		bra.w	MarkObjGone
+
+; ---------------------------------------------------------------------------
+; Animation script - trapdoor (SBZ)
+; ---------------------------------------------------------------------------
+Ani_Spin:	dc.w @trapopen-Ani_Spin
+		dc.w @trapclose-Ani_Spin
+		dc.w @spin1-Ani_Spin
+		dc.w @spin2-Ani_Spin
+@trapopen:	dc.b 3,	0, 1, 2, $FE, 1
+@trapclose:	dc.b 3,	2, 1, 0, $FE, 1
+@spin1:		dc.b 1,	0, 1, 2, 3, 4, $43, $42, $41, $40, $61,	$62, $63, $64, $23, $22, $21, 0, $FE, 1
+@spin2:		dc.b 1,	0, 1, 2, 3, 4, $43, $42, $41, $40, $61,	$62, $63, $64, $23, $22, $21, 0, $FE, 1
+		even
+
+Map_Trap:	include	"_maps/Trapdoor.asm"
+Map_Spin:	include	"_maps/SBZ Spinning Platforms.asm"
+
+; ---------------------------------------------------------------------------
+; Object 72 - teleporter (SBZ)
+; ---------------------------------------------------------------------------
+
+Obj72:
+		moveq	#0,d0
+		move.b	obRoutine(a0),d0
+		move.w	Tele_Index(pc,d0.w),d1
+		jsr	Tele_Index(pc,d1.w)
+		move.w	8(a0),d0
+		andi.w	#$FF80,d0
+		sub.w	($FFFFF7DA).w,d0
+		cmpi.w	#$280,d0
+		bhi.s	@delete
+		rts
+
+@delete:
+		jmp	(DeleteObject).l
+; ===========================================================================
+Tele_Index:	dc.w Tele_Main-Tele_Index
+		dc.w loc_166C8-Tele_Index
+		dc.w loc_1675E-Tele_Index
+		dc.w loc_16798-Tele_Index
+; ===========================================================================
+
+Tele_Main:	; Routine 0
+		addq.b	#2,obRoutine(a0)
+		move.b	obSubtype(a0),d0
+		add.w	d0,d0
+		andi.w	#$1E,d0
+		lea	Tele_Data(pc),a2
+		adda.w	(a2,d0.w),a2
+		move.w	(a2)+,$3A(a0)
+		move.l	a2,$3C(a0)
+		move.w	(a2)+,$36(a0)
+		move.w	(a2)+,$38(a0)
+
+loc_166C8:	; Routine 2
+		lea	(v_objspace).w,a1
+		move.w	obX(a1),d0
+		sub.w	obX(a0),d0
+		btst	#0,obStatus(a0)
+		beq.s	loc_166E0
+		addi.w	#$F,d0
+
+loc_166E0:
+		cmpi.w	#$10,d0
+		bcc.s	locret_1675C
+		move.w	obY(a1),d1
+		sub.w	obY(a0),d1
+		addi.w	#$20,d1
+		cmpi.w	#$40,d1
+		bcc.s	locret_1675C
+		tst.b	($FFFFF7C8).w
+		bne.s	locret_1675C
+		cmpi.b	#7,obSubtype(a0)
+		bne.s	loc_1670E
+		cmpi.w	#50,($FFFFFE20).w
+		bcs.s	locret_1675C
+
+loc_1670E:
+		addq.b	#2,obRoutine(a0)
+		move.b	#$81,($FFFFF7C8).w ; lock controls and disable object interaction
+		move.b	#2,obAnim(a1) ; use Sonic's rolling animation
+		move.w	#$800,obInertia(a1)
+		move.w	#0,obVelX(a1)
+		move.w	#0,obVelY(a1)
+		bclr	#5,obStatus(a0)
+		bclr	#5,obStatus(a1)
+		bset	#1,obStatus(a1)
+		move.w	obX(a0),obX(a1)
+		move.w	obY(a0),obY(a1)
+		clr.b	$32(a0)
+		move.w	#$BE,d0
+		jsr	(PlaySound_Special).l	; play Sonic rolling sound
+
+locret_1675C:
+		rts	
+; ===========================================================================
+
+loc_1675E:	; Routine 4
+		lea	(v_objspace).w,a1
+		move.b	$32(a0),d0
+		addq.b	#2,$32(a0)
+		jsr	(CalcSine).l
+		asr.w	#5,d0
+		move.w	obY(a0),d2
+		sub.w	d0,d2
+		move.w	d2,obY(a1)
+		cmpi.b	#$80,$32(a0)
+		bne.s	locret_16796
+		bsr.w	sub_1681C
+		addq.b	#2,obRoutine(a0)
+		move.w	#$BC,d0
+		jsr	(PlaySound_Special).l	; play teleport sound
+
+locret_16796:
+		rts	
+; ===========================================================================
+
+loc_16798:	; Routine 6
+		addq.l	#4,sp
+		lea	(v_objspace).w,a1
+		subq.b	#1,$2E(a0)
+		bpl.s	loc_167DA
+		move.w	$36(a0),obX(a1)
+		move.w	$38(a0),obY(a1)
+		moveq	#0,d1
+		move.b	$3A(a0),d1
+		addq.b	#4,d1
+		cmp.b	$3B(a0),d1
+		bcs.s	loc_167C2
+		moveq	#0,d1
+		bra.s	loc_16800
+; ===========================================================================
+
+loc_167C2:
+		move.b	d1,$3A(a0)
+		movea.l	$3C(a0),a2
+		move.w	(a2,d1.w),$36(a0)
+		move.w	2(a2,d1.w),$38(a0)
+		bra.w	sub_1681C
+; ===========================================================================
+
+loc_167DA:
+		move.l	obX(a1),d2
+		move.l	obY(a1),d3
+		move.w	obVelX(a1),d0
+		ext.l	d0
+		asl.l	#8,d0
+		add.l	d0,d2
+		move.w	obVelY(a1),d0
+		ext.l	d0
+		asl.l	#8,d0
+		add.l	d0,d3
+		move.l	d2,obX(a1)
+		move.l	d3,obY(a1)
+		rts	
+; ===========================================================================
+
+loc_16800:
+		andi.w	#$7FF,obY(a1)
+		clr.b	obRoutine(a0)
+		clr.b	($FFFFF7C8).w
+		move.w	#0,obVelX(a1)
+		move.w	#$200,obVelY(a1)
+		rts	
+
+; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
+
+
+sub_1681C:
+		moveq	#0,d0
+		move.w	#$1000,d2
+		move.w	$36(a0),d0
+		sub.w	obX(a1),d0
+		bge.s	loc_16830
+		neg.w	d0
+		neg.w	d2
+
+loc_16830:
+		moveq	#0,d1
+		move.w	#$1000,d3
+		move.w	$38(a0),d1
+		sub.w	obY(a1),d1
+		bge.s	loc_16844
+		neg.w	d1
+		neg.w	d3
+
+loc_16844:
+		cmp.w	d0,d1
+		bcs.s	loc_1687A
+		moveq	#0,d1
+		move.w	$38(a0),d1
+		sub.w	obY(a1),d1
+		swap	d1
+		divs.w	d3,d1
+		moveq	#0,d0
+		move.w	$36(a0),d0
+		sub.w	obX(a1),d0
+		beq.s	loc_16866
+		swap	d0
+		divs.w	d1,d0
+
+loc_16866:
+		move.w	d0,obVelX(a1)
+		move.w	d3,obVelY(a1)
+		tst.w	d1
+		bpl.s	loc_16874
+		neg.w	d1
+
+loc_16874:
+		move.w	d1,$2E(a0)
+		rts	
+; ===========================================================================
+
+loc_1687A:
+		moveq	#0,d0
+		move.w	$36(a0),d0
+		sub.w	obX(a1),d0
+		swap	d0
+		divs.w	d2,d0
+		moveq	#0,d1
+		move.w	$38(a0),d1
+		sub.w	obY(a1),d1
+		beq.s	loc_16898
+		swap	d1
+		divs.w	d0,d1
+
+loc_16898:
+		move.w	d1,obVelY(a1)
+		move.w	d2,obVelX(a1)
+		tst.w	d0
+		bpl.s	loc_168A6
+		neg.w	d0
+
+loc_168A6:
+		move.w	d0,$2E(a0)
+		rts	
+; End of function sub_1681C
+
+; ===========================================================================
+Tele_Data:	dc.w @type00-Tele_Data, @type01-Tele_Data, @type02-Tele_Data
+		dc.w @type03-Tele_Data, @type04-Tele_Data, @type05-Tele_Data
+		dc.w @type06-Tele_Data, @type07-Tele_Data
+@type00:	dc.w 4,	$794, $98C
+@type01:	dc.w 4,	$94, $38C
+@type02:	dc.w $1C, $794,	$2E8
+		dc.w $7A4, $2C0, $7D0
+		dc.w $2AC, $858, $2AC
+		dc.w $884, $298, $894
+		dc.w $270, $894, $190
+@type03:	dc.w 4,	$894, $690
+@type04:	dc.w $1C, $1194, $470
+		dc.w $1184, $498, $1158
+		dc.w $4AC, $FD0, $4AC
+		dc.w $FA4, $4C0, $F94
+		dc.w $4E8, $F94, $590
+@type05:	dc.w 4,	$1294, $490
+@type06:	dc.w $1C, $1594, $FFE8
+		dc.w $1584, $FFC0, $1560
+		dc.w $FFAC, $14D0, $FFAC
+		dc.w $14A4, $FF98, $1494
+		dc.w $FF70, $1494, $FD90
+@type07:	dc.w 4,	$894, $90
+
 ;----------------------------------------------------
 ; Object 79 - lamppost
 ;----------------------------------------------------
@@ -27537,8 +28111,8 @@ locret_13974:				; CODE XREF: S1Obj47_Bump+68j
 loc_13976:				; CODE XREF: ROM:000138B8j
 					; ROM:000138DCj
 		lea	(Ani_S1Obj47).l,a1
-		bsr.w	AnimateSprite
-		bra.w	MarkObjGone
+		jsr	AnimateSprite
+		jmp	MarkObjGone
 ; ---------------------------------------------------------------------------
 Ani_S1Obj47:	dc.w byte_13988-Ani_S1Obj47 ; DATA XREF: ROM:loc_13976o
 					; ROM:Ani_S1Obj47o ...
@@ -27657,7 +28231,7 @@ loc_13A7E:				; CODE XREF: ROM:00013A6Ej
 
 loc_13B0A:				; CODE XREF: ROM:00013AA2j
 					; ROM:00013AA8j
-		bsr.w	SpeedToPos
+		jsr	SpeedToPos
 		tst.b	1(a0)
 		bpl.s	loc_13B1A
 		jmp	DisplaySprite
@@ -27681,7 +28255,7 @@ loc_13B38:				; CODE XREF: ROM:00013B30j
 ; ---------------------------------------------------------------------------
 
 S1Obj64_Delete:				; DATA XREF: ROM:000139E6o
-		bra.w	DeleteObject
+		jmp	DeleteObject
 ; ---------------------------------------------------------------------------
 
 S1Obj64_BblMaker:			; CODE XREF: ROM:00013A2Ej
@@ -27775,11 +28349,17 @@ loc_13C50:				; CODE XREF: ROM:00013B50j
 		andi.w	#$FF80,d0
 		sub.w	($FFFFF7DA).w,d0
 		cmpi.w	#$280,d0
-		bhi.w	DeleteObject
+		bhi.s	@delete
 		move.w	($FFFFF646).w,d0
 		cmp.w	$C(a0),d0
-		bcs.w	DisplaySprite
+		bcs.s	@display
 		rts
+
+@delete:
+		jmp	(DeleteObject).l
+
+@display:
+		jmp	(DisplaySprite).l
 ; ---------------------------------------------------------------------------
 S1Obj64_BblTypes:dc.b	0,  1,	0,  0,	0,  0,	1,  0,	0; 0 ; DATA XREF: ROM:00013B84o
 		dc.b   0,  0,  1,  0,  1,  0,  0,  1,  0; 9
@@ -27919,8 +28499,11 @@ Obj03:					; DATA XREF: ROM:Obj_Indexo
 		move.w	Obj03_Index(pc,d0.w),d1
 		jsr	Obj03_Index(pc,d1.w)
 		tst.w	($FFFFFFFA).w
-		beq.w	loc_CE92
+		beq.s	JmpTo_loc_CE92
 		jmp	MarkObjGone
+
+JmpTo_loc_CE92:
+		jmp	(loc_CE92).l
 ; ---------------------------------------------------------------------------
 Obj03_Index:	dc.w Obj03_Init-Obj03_Index ; DATA XREF: ROM:Obj03_Indexo
 					; ROM:00013E4Ao ...
@@ -27932,7 +28515,7 @@ Obj03_Init:				; DATA XREF: ROM:Obj03_Indexo
 		addq.b	#2,$24(a0)
 		move.l	#Map_Obj03,4(a0)
 		move.w	#$27B2,2(a0)
-		bsr.w	ModifySpriteAttr_2P
+		jsr	ModifySpriteAttr_2P
 		move.b	#4,1(a0)
 		move.b	#$10,$19(a0)
 		move.b	#5,$18(a0)
@@ -28239,7 +28822,7 @@ loc_14CD2:				; DATA XREF: ROM:Obj14_Indexo
 		addq.b	#2,$24(a0)
 		move.l	#Map_Obj14,4(a0)
 		move.w	#$3CE,2(a0)
-		bsr.w	ModifySpriteAttr_2P
+		jsr	ModifySpriteAttr_2P
 		ori.b	#4,1(a0)
 		move.b	#4,$18(a0)
 		move.b	#$30,$19(a0) ; "0"
@@ -36757,24 +37340,10 @@ RingPos_SLZ2:	incbin	"ringpos\slz2.bin"
 		even
 RingPos_SLZ3:	incbin	"ringpos\slz3.bin"
 		even
-RingPos_SBZ1:	dc.w   $D0,$3340	; 0 ; DATA XREF: ROM:RingPos_Indexo
-		dc.w  $1E0, $3F0	; 2
-		dc.w  $200, $400	; 4
-		dc.w  $220, $410	; 6
-		dc.w  $240, $420	; 8
-		dc.w  $260, $430	; 10
-		dc.w  $280, $440	; 12
-		dc.w  $2A0, $450	; 14
-		dc.w  $2C0, $460	; 16
-		dc.w  $3C0,$2420	; 18
-		dc.w  $440,$2400	; 20
-		dc.w  $648,$23B8	; 22
-		dc.w  $7A0,$C2E0	; 24
-		dc.w  $928,$2350	; 26
-		dc.w  $CFC,$32A0	; 28
-		dc.w  $D10,$2420	; 30
-		dc.w $FFFF		; 32
-RingPos_SBZ2:	dc.w $FFFF		; DATA XREF: ROM:RingPos_Indexo
+RingPos_SBZ1:	incbin	"ringpos\sbz1.bin"
+		even
+RingPos_SBZ2:	incbin	"ringpos\sbz2.bin"
+		even
 
                 include "s1.sounddriver.asm"
 

@@ -156,7 +156,9 @@ PLC_SYZ:	dc.w ((PLC_SYZ2-PLC_SYZ-2)/6)-1
 		dc.w $8000
 		dc.l Nem_GHZBuzzbomber
 		dc.w $8880
-PLC_SYZ2:	dc.w ((PLC_SBZ-PLC_SYZ2-2)/6)-1	
+PLC_SYZ2:	dc.w ((PLC_SBZ-PLC_SYZ2-2)/6)-1
+		dc.l Nem_Bumper
+		dc.w $7000
 		dc.l Nem_LzSwitch
 		dc.w $A1E0	
 		dc.l Nem_VSpikes
@@ -168,13 +170,23 @@ PLC_SYZ2:	dc.w ((PLC_SBZ-PLC_SYZ2-2)/6)-1
 PLC_SBZ:	dc.w ((PLC_SBZ2-PLC_SBZ-2)/6)-1			
 		dc.l Nem_SBZ
 		dc.w 0
+		dc.l S1Nem_Ballhog
+		dc.w $6040
 		dc.l Nem_VSpikes
 		dc.w $A360
 		dc.l Nem_HSpring
 		dc.w $A460
 		dc.l Nem_VSpring
 		dc.w $A660
-PLC_SBZ2:	dc.w ((PLC_SYZ-PLC_S1TitleCard-2)/6)-1	
+PLC_SBZ2:	dc.w ((PLC_S1TitleCard-PLC_SBZ2-2)/6)-1
+		dc.l S1Nem_Caterkiller
+		dc.w $5600	
+		dc.l S1Nem_Bomb
+		dc.w $8000
+		dc.l S1Nem_Orbinaut
+		dc.w $8520
+		dc.l Nem_LzSwitch
+		dc.w $A1E0
 
 PLC_S1TitleCard:dc.w 0			
 		dc.l Nem_S1TitleCard
